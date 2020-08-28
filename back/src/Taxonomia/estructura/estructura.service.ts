@@ -4,6 +4,7 @@ import { EstructuraDTO } from './estructura.dto';
 import { Estructura } from './estructura.interface';
 import { Model } from 'mongoose';
 import { TipoEstructura } from '../tipo-estructura/tipo-estructura.interface';
+import { EspecieDTO } from './especie.dto';
 
 @Injectable()
 export class EstructuraService {
@@ -24,6 +25,21 @@ export class EstructuraService {
 
         } catch (e) { // MongoError
             throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async getAllEspecies(row: number, page: number, filtro: string,sort: string) {
+        try {
+            const tipoEstructuraEspecie = this.tipoEstructuraModel.findOne({nombre:"Especie"})
+            let query = { tipo: (await tipoEstructuraEspecie)._id }
+            if (filtro && filtro != "null" && filtro != "") {
+                query["nombre"] = { $regex: filtro, $options: 'i' }
+            }
+            const data = await this.model.find(query).sort(sort).limit(row).skip(row * page).populate("padre")
+            const count = await this.model.countDocuments(query)
+            return { data, count }
+
+        } catch (e) { // MongoError
+            throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
     async all() {
@@ -91,7 +107,7 @@ export class EstructuraService {
                 path: 'padre',
                 // Get friends of friends - populate the 'friends' array for every friend
                 populate: { path: 'tipo' }
-              }).populate("tipo");
+              }).populate("tipo clasificador usos");
         } catch (e) { // MongoError
             throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -208,6 +224,14 @@ export class EstructuraService {
     async create(EstructuraDTO: EstructuraDTO): Promise<Estructura> {
         try {
             const obj = new this.model(EstructuraDTO);
+            return await obj.save();
+        } catch (e) { // MongoError
+            throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async createEspecie(EspecieDTO: EspecieDTO): Promise<Estructura> {
+        try {
+            const obj = new this.model(EspecieDTO);
             return await obj.save();
         } catch (e) { // MongoError
             throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);

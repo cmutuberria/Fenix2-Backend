@@ -1,7 +1,7 @@
 
 import { Document } from "mongoose";
 
-export interface Jardin extends Document {
+export interface Institucion extends Document {
     readonly nombre: string;
     readonly pais: string;
     readonly es_privado: boolean;

@@ -5,9 +5,17 @@ import {
 import { PaisService } from './pais.service';
 import { PaisDTO } from './pais.dto';
 
+
 @Controller('pais')
 export class PaisController {
     constructor(private paisService: PaisService) { };
+    @Get('/carga-inicial')
+    async createMany(@Res() res) {
+       
+        const all = await this.paisService.createMany();
+
+        return res.status(HttpStatus.OK).json(all)
+    }
 
     @Post('/')
     async create(@Res() res, @Body() paisDTO: PaisDTO) {

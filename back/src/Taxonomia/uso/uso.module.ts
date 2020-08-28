@@ -3,12 +3,12 @@ import { UsoController } from './uso.controller';
 import { UsoService } from './uso.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { usoSchema } from './uso.schema';
-import { especieSchema } from '../especie/especie.schema';
+import { estructuraSchema } from '../estructura/estructura.schema';
 
 @Module({
   imports: [MongooseModule.forFeature([
     { name: 'uso', schema: usoSchema },
-    { name: 'especie', schema: especieSchema }
+    { name: 'estructura', schema: estructuraSchema }
   ])],
   controllers: [UsoController],
   providers: [UsoService]

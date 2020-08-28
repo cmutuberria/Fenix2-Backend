@@ -20,7 +20,7 @@ import ListItemLink from './ListItemLink';
 import useStyles from '../style'
 import {
     ExitToApp, Home, AccountCircle,
-    Public, HomeWork, SupervisedUserCircle, LineStyle, AccountTree, Dns, DragHandle, FilterVintage, EmojiNature, Nature, Search
+    Public, HomeWork, SupervisedUserCircle, LineStyle, AccountTree, Dns, DragHandle, FilterVintage, EmojiNature, Nature, Search, Extension
 } from '@material-ui/icons';
 import { userAuthenticated } from "../Redux/selectors"
 import { hasPermition } from "../Auth/auth"
@@ -190,6 +190,8 @@ export default ({ history }) => {
                     <Collapse in={openModulo == modulesKey.TAXONOMIA && isOpenModulo} timeout="auto"
                         unmountOnExit key="TaxonomiaMenu">
                         <List component="div" disablePadding>
+                        <ListItemLink to="/Taxonomia/TipoEstructura"
+                                primary="Tipo Estructura" icon={<Extension />} classes={classes.nested} />
                             <ListItemLink to="/Taxonomia/Estructura"
                                 primary="Estructura" icon={<AccountTree />} classes={classes.nested} />
                             <ListItemLink to="/Taxonomia/Filtro"

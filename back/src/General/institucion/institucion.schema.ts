@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 
-export const jardinSchema = new Schema({
+export const institucionSchema = new Schema({
     nombre: {
         type: String,
         required: true

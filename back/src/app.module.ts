@@ -6,7 +6,7 @@ import uri from './uri'
 import { TrabajadorModule } from './General/trabajador/trabajador.module';
 import { AuthModule } from './auth/auth.module';
 import { PaisModule } from './General/pais/pais.module';
-import { JardinModule } from './General/jardin/jardin.module';
+import { InstitucionModule } from './General/institucion/institucion.module';
 import { ColectorModule } from './General/colector/colector.module';
 import { UsoModule } from './Taxonomia/uso/uso.module';
 import { EspecieModule } from './Taxonomia/especie/especie.module';
@@ -18,7 +18,7 @@ import { CategoriaUICNModule } from './General/categoria-uicn/categoria-uicn.mod
   imports: [MongooseModule.forRoot(uri, { useNewUrlParser: true, useFindAndModify: false }),
     AuthModule, 
     // Configuracion general
-    TrabajadorModule, PaisModule, JardinModule, ColectorModule, CategoriaUICNModule,
+    TrabajadorModule, PaisModule, InstitucionModule, ColectorModule, CategoriaUICNModule,
     // Taxonomia
     TipoEstructuraModule, EstructuraModule, UsoModule, EspecieModule],
   controllers: [AppController],

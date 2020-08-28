@@ -4,6 +4,7 @@ import {
 } from '@nestjs/common';
 import { EstructuraService } from './estructura.service';
 import { EstructuraDTO } from './estructura.dto';
+import { EspecieDTO } from './especie.dto';
 
 @Controller('estructura')
 export class EstructuraController {
@@ -17,11 +18,25 @@ export class EstructuraController {
             obj
         })
     }
+    @Post('/especie')
+    async createEspe(@Res() res, @Body() especieDTO: EspecieDTO) {
+        const obj = await this.estructuraService.create(especieDTO);
+        return res.status(HttpStatus.OK).json({
+            message: 'Especie creada correctamente',
+            obj
+        })
+    }
 
     @Get('/')
     async getAll(@Res() res, @Query() queryParams) {
         const { row, page, filtro, sort, tipo } = queryParams;
         const all = await this.estructuraService.getAll(parseInt(row), parseInt(page), filtro, sort, tipo);
+        return res.status(HttpStatus.OK).json(all)
+    }
+    @Get('/all-especies')
+    async getAllEspecies(@Res() res, @Query() queryParams) {        
+        const { row, page, filtro, sort } = queryParams;
+        const all = await this.estructuraService.getAllEspecies(parseInt(row), parseInt(page), filtro, sort);
         return res.status(HttpStatus.OK).json(all)
     }
     @Get('/AllTipo')
@@ -112,6 +127,16 @@ export class EstructuraController {
         }
         return res.status(HttpStatus.OK).json({
             message: "Estructura actualizada correctamente",
+            obj
+        })
+    }@Put('/especie/:id')
+    async updateEspecie(@Res() res, @Param('id') id: string, @Body() especieDTO: EspecieDTO) {
+        const obj = await this.estructuraService.update(id, especieDTO);
+        if (!obj) {
+            throw new NotFoundException('Especie no encontrada');
+        }
+        return res.status(HttpStatus.OK).json({
+            message: "Especie actualizada correctamente",
             obj
         })
     }

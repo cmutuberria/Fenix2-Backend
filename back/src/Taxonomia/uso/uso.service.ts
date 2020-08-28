@@ -3,12 +3,12 @@ import { InjectModel } from "@nestjs/mongoose";
 import { UsoDTO } from './uso.dto';
 import { Uso } from './uso.interface';
 import { Model } from 'mongoose';
-import { Especie } from '../especie/especie.interface';
+import { Estructura } from '../estructura/estructura.interface';
 
 @Injectable()
 export class UsoService {
     constructor(@InjectModel('uso') private readonly model: Model<Uso>,
-    @InjectModel('especie') private readonly especieModel: Model<Especie>) { }
+    @InjectModel('estructura') private readonly especieModel: Model<Estructura>) { }
 
     async getAll( row: number, page: number, filtro: string,
         sort: string) {

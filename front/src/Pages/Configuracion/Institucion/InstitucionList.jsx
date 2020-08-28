@@ -8,12 +8,14 @@ import useStyles from '../../../style'
 import { useSnackbar } from 'notistack';
 import { LOADING_START, LOADING_END, SERVER_ERROR } from "../../../Redux/actionTypes";
 import { apiCall } from "../../../Redux/Api";
+import { useSelector } from "react-redux";
+import { userAuthenticated } from "../../../Redux/selectors"
+import { logout } from '../../../Redux/Actions/auth'
 import Dialog from "../../../Components/Dialog"
-import { Edit, Delete, Visibility } from "@material-ui/icons";
+import { Visibility, Edit, Delete, LockOpen, Lock, PermIdentity } from "@material-ui/icons";
 import SortableCell from '../../../Components/SortableCell';
 import TablePagination from '../../../Components/TablePagination';
 import TableTextFilter from "../../../Components/TableTextFilter";
-import CategoriaUICN from '../../../Constant/CategoriaUICN';
 
 
 
@@ -22,6 +24,7 @@ export default ({ history }) => {
     const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
     const [data, setData] = useState([]);
+    const userAuth = useSelector(state => userAuthenticated(state));
     const [openDialog, setOpenDialog] = useState(false);
     const [obj, setObj] = useState();
     //table pagination adnd sort
@@ -32,9 +35,7 @@ export default ({ history }) => {
     const [sort, setSort] = useState();
 
     useEffect(() => {
-        if (row) {
-            list();
-        }
+        list();
     }, [page, row, filtro, sort])
 
     const list = async () => {
@@ -47,7 +48,7 @@ export default ({ history }) => {
             if (sort) {
                 params += `&sort=${sort}`
             }
-            const result = await apiCall(`/estructura/all-especies?${params}`, null, null, 'GET');
+            const result = await apiCall(`/institucion?${params}`, null, null, 'GET');
             const { data, count } = result.data;
             setData(data);
             setTotal(count);
@@ -59,13 +60,13 @@ export default ({ history }) => {
         }
     };
     const handleAdd = () => {
-        history.push(`/Taxonomia/Especie/Formulario`)
-    }
-    const handleView = (e, obj) => {
-        history.push(`/Taxonomia/Especie/Detalle/${obj._id}`)
+        history.push(`/Configuracion/Institucion/Formulario`)
     }
     const handleEdit = (e, obj) => {
-        history.push(`/Taxonomia/Especie/Formulario/${obj._id}`)
+        history.push(`/Configuracion/Institucion/Formulario/${obj._id}`)
+    }
+    const handleDetail = (e, obj) => {
+        history.push(`/Configuracion/Institucion/Detalle/${obj._id}`)
     }
     const handleDelete = (e, obj) => {
         setOpenDialog(true);
@@ -78,10 +79,15 @@ export default ({ history }) => {
         try {
             dispatch({ type: LOADING_START });
             setOpenDialog(false);
-            const result = await apiCall(`/estructura/${obj._id}`, null, null, 'DELETE');
+            const result = await apiCall(`/institucion/${obj._id}`, null, null, 'DELETE');
             dispatch({ type: LOADING_END });
             if (result) {
-                list();
+                //si el trabajador eliminado es el autenticado hacer logout
+                if (userAuth._id === obj._id) {
+                    dispatch(logout());
+                } else {
+                    list();
+                }
                 enqueueSnackbar(result.data.message, { variant: 'success' });
             }
         } catch (err) {
@@ -94,17 +100,31 @@ export default ({ history }) => {
             }
         }
     }
+    async function handleLock(e, obj) {
+        try {
+            dispatch({ type: LOADING_START });
+            const result = await apiCall(`/institucion/${obj._id}`, { activo: !obj.activo }, null, 'PUT');
+            if (result) {
+                enqueueSnackbar(result.data.message, { variant: 'success' });
+            }
+            dispatch({ type: LOADING_END });
+        } catch (err) {
+            dispatch({ type: LOADING_END });
+            enqueueSnackbar(err.response.data.message, { variant: 'error' });
+        } finally {
+            list();
+        }
+    }
     return (
         <React.Fragment>
             <div className={classes.header}>
-                <Typography variant="h5" className={classes.title}>Listado de Especies</Typography>
+                <Typography variant="h5" className={classes.title}>Listado de Instituciones</Typography>
                 <Button color="primary" variant="contained"
                     className={classes.btnMargin}
-                    onClick={handleAdd}>Nueva Especie</Button>
+                    onClick={handleAdd}>Nueva Institución</Button>
             </div>
             <TableContainer component={Paper}>
-                <TableTextFilter setPage={setPage} filtro={filtro} 
-                setFiltro={setFiltro} placeholder="Buscar Especie" />
+                <TableTextFilter setPage={setPage} filtro={filtro} setFiltro={setFiltro} placeholder="Buscar Trabajador" />
                 <Table aria-label="simple table" size="small">
                     <TableHead>
                         <TableRow>
@@ -112,14 +132,14 @@ export default ({ history }) => {
                             <SortableCell columnKey="nombre" columnLabel="Nombre"
                                 sort={sort}
                                 setSort={setSort} />
-                            <SortableCell columnKey="categoria_UICN" columnLabel="UICN"
+                                <TableCell >País</TableCell>
+                            <SortableCell columnKey="tipo_coleccion" columnLabel="Tipo Colección"
                                 sort={sort}
                                 setSort={setSort} />
-                            <TableCell>Clasificador</TableCell>
-                            <SortableCell columnKey="anno_clasificacion" columnLabel="Clasificado en:"
+                            <SortableCell columnKey="es_privado" columnLabel="Privado"
                                 sort={sort}
                                 setSort={setSort} />
-                            <SortableCell columnKey="origen" columnLabel="Origen"
+                            <SortableCell columnKey="activo" columnLabel="Activo"
                                 sort={sort}
                                 setSort={setSort} />
                         </TableRow>
@@ -130,9 +150,9 @@ export default ({ history }) => {
                                 <TableCell>
                                     <Tooltip title="Detalle">
                                         <IconButton
-                                            onClick={(e) => handleView(e, row)}
+                                            onClick={(e) => handleDetail(e, row)}
                                             color="inherit"
-                                            aria-label="Editar"
+                                            aria-label="Detalle"
                                             size="small">
                                             <Visibility fontSize="small" />
                                         </IconButton>
@@ -155,20 +175,42 @@ export default ({ history }) => {
                                             <Delete fontSize="small" />
                                         </IconButton>
                                     </Tooltip>
+                                    {row.activo && userAuth._id != row._id && <Tooltip title="Desactivar">
+                                        <IconButton
+                                            onClick={(e) => handleLock(e, row)}
+                                            color="inherit"
+                                            aria-label="Desactivar"
+                                            size="small">
+                                            <Lock fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>}
+                                    {!row.activo && userAuth._id != row._id && <Tooltip title="Activar">
+                                        <IconButton
+                                            onClick={(e) => handleLock(e, row)}
+                                            color="inherit"
+                                            aria-label="Activar"
+                                            size="small">
+                                            <LockOpen fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>}
                                 </TableCell>
-                                <TableCell>{row.nombre}</TableCell>                                
-                                <TableCell>{CategoriaUICN.find(elem => elem._id == row.categoria_UICN).label}</TableCell>
-                                <TableCell>{row.clasificador?row.clasificador.nombre:""}</TableCell>
-                                <TableCell>{row.anno_clasificacion}</TableCell>
-                                <TableCell>{row.origen}</TableCell>
+                                <TableCell >{row.nombre}</TableCell>
+                                <TableCell >{row.pais ? row.pais.nombre : ""}</TableCell>
+                                <TableCell >{row.tipo_coleccion}</TableCell>
+                                <TableCell ><Typography color={row.es_privado ? "primary" : "error"}>
+                                    {row.es_privado ? "Si" : "No"}
+                                </Typography></TableCell>
+                                <TableCell ><Typography color={row.activo ? "primary" : "error"}>
+                                    {row.activo ? "Si" : "No"}
+                                </Typography></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
                 <TablePagination row={row} setRow={setRow} page={page} setPage={setPage} total={total} />
             </TableContainer>
-            <Dialog title="Eliminar Especie" key="dialog"
-                body="¿Desea eliminar la Especie?"
+            <Dialog title="Eliminar Institución" key="dialog"
+                body="¿Desea eliminar la institución?"
                 open={openDialog}
                 handlerOk={handleOkDelete}
                 handleCancel={handleCancelDelete} />

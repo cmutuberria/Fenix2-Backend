@@ -8,11 +8,8 @@ import useStyles from '../../../style'
 import { useSnackbar } from 'notistack';
 import { LOADING_START, LOADING_END, SERVER_ERROR } from "../../../Redux/actionTypes";
 import { apiCall } from "../../../Redux/Api";
-import { useSelector } from "react-redux";
-import { userAuthenticated } from "../../../Redux/selectors"
-import { logout } from '../../../Redux/Actions/auth'
 import Dialog from "../../../Components/Dialog"
-import { Visibility, Edit, Delete, LockOpen, Lock, PermIdentity } from "@material-ui/icons";
+import { Edit, Delete } from "@material-ui/icons";
 import SortableCell from '../../../Components/SortableCell';
 import TablePagination from '../../../Components/TablePagination';
 import TableTextFilter from "../../../Components/TableTextFilter";
@@ -24,7 +21,6 @@ export default ({ history }) => {
     const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
     const [data, setData] = useState([]);
-    const userAuth = useSelector(state => userAuthenticated(state));
     const [openDialog, setOpenDialog] = useState(false);
     const [obj, setObj] = useState();
     //table pagination adnd sort
@@ -35,7 +31,9 @@ export default ({ history }) => {
     const [sort, setSort] = useState();
 
     useEffect(() => {
-        list();
+        if (row) {
+            list();
+        }
     }, [page, row, filtro, sort])
 
     const list = async () => {
@@ -48,7 +46,7 @@ export default ({ history }) => {
             if (sort) {
                 params += `&sort=${sort}`
             }
-            const result = await apiCall(`/jardin?${params}`, null, null, 'GET');
+            const result = await apiCall(`/tipoEstructura?${params}`, null, null, 'GET');
             const { data, count } = result.data;
             setData(data);
             setTotal(count);
@@ -60,13 +58,10 @@ export default ({ history }) => {
         }
     };
     const handleAdd = () => {
-        history.push(`/Configuracion/Jardin/Formulario`)
+        history.push(`/Taxonomia/TipoEstructura/Formulario`)
     }
     const handleEdit = (e, obj) => {
-        history.push(`/Configuracion/Jardin/Formulario/${obj._id}`)
-    }
-    const handleDetail = (e, obj) => {
-        history.push(`/Configuracion/Jardin/Detalle/${obj._id}`)
+        history.push(`/Taxonomia/TipoEstructura/Formulario/${obj._id}`)
     }
     const handleDelete = (e, obj) => {
         setOpenDialog(true);
@@ -79,15 +74,10 @@ export default ({ history }) => {
         try {
             dispatch({ type: LOADING_START });
             setOpenDialog(false);
-            const result = await apiCall(`/jardin/${obj._id}`, null, null, 'DELETE');
+            const result = await apiCall(`/tipoEstructura/${obj._id}`, null, null, 'DELETE');
             dispatch({ type: LOADING_END });
             if (result) {
-                //si el trabajador eliminado es el autenticado hacer logout
-                if (userAuth._id === obj._id) {
-                    dispatch(logout());
-                } else {
-                    list();
-                }
+                list();
                 enqueueSnackbar(result.data.message, { variant: 'success' });
             }
         } catch (err) {
@@ -100,31 +90,17 @@ export default ({ history }) => {
             }
         }
     }
-    async function handleLock(e, obj) {
-        try {
-            dispatch({ type: LOADING_START });
-            const result = await apiCall(`/jardin/${obj._id}`, { activo: !obj.activo }, null, 'PUT');
-            if (result) {
-                enqueueSnackbar(result.data.message, { variant: 'success' });
-            }
-            dispatch({ type: LOADING_END });
-        } catch (err) {
-            dispatch({ type: LOADING_END });
-            enqueueSnackbar(err.response.data.message, { variant: 'error' });
-        } finally {
-            list();
-        }
-    }
     return (
         <React.Fragment>
             <div className={classes.header}>
-                <Typography variant="h5" className={classes.title}>Listado de Jardines Botánicos</Typography>
+                <Typography variant="h5" className={classes.title}>Listado de Tipos de Estructura</Typography>
                 <Button color="primary" variant="contained"
                     className={classes.btnMargin}
-                    onClick={handleAdd}>Nuevo Jardín</Button>
+                    onClick={handleAdd}>Nuevo Tipo Estructura</Button>
             </div>
             <TableContainer component={Paper}>
-                <TableTextFilter setPage={setPage} filtro={filtro} setFiltro={setFiltro} placeholder="Buscar Trabajador" />
+                <TableTextFilter setPage={setPage} filtro={filtro} 
+                setFiltro={setFiltro} placeholder="Buscar Tipo Estructura" />
                 <Table aria-label="simple table" size="small">
                     <TableHead>
                         <TableRow>
@@ -132,31 +108,20 @@ export default ({ history }) => {
                             <SortableCell columnKey="nombre" columnLabel="Nombre"
                                 sort={sort}
                                 setSort={setSort} />
-                                <TableCell >País</TableCell>
-                            <SortableCell columnKey="tipo_coleccion" columnLabel="Tipo Colección"
+                            <SortableCell columnKey="label" columnLabel="Label"
                                 sort={sort}
                                 setSort={setSort} />
-                            <SortableCell columnKey="es_privado" columnLabel="Privado"
+                        <SortableCell columnKey="orden" columnLabel="Orden"
                                 sort={sort}
                                 setSort={setSort} />
-                            <SortableCell columnKey="activo" columnLabel="Activo"
-                                sort={sort}
-                                setSort={setSort} />
+                        <TableCell>Padres</TableCell>
+                        <TableCell>Hijos</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {data.map((row, i) => (
                             <TableRow key={i}>
                                 <TableCell>
-                                    <Tooltip title="Detalle">
-                                        <IconButton
-                                            onClick={(e) => handleDetail(e, row)}
-                                            color="inherit"
-                                            aria-label="Detalle"
-                                            size="small">
-                                            <Visibility fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>
                                     <Tooltip title="Editar">
                                         <IconButton
                                             onClick={(e) => handleEdit(e, row)}
@@ -175,42 +140,20 @@ export default ({ history }) => {
                                             <Delete fontSize="small" />
                                         </IconButton>
                                     </Tooltip>
-                                    {row.activo && userAuth._id != row._id && <Tooltip title="Desactivar">
-                                        <IconButton
-                                            onClick={(e) => handleLock(e, row)}
-                                            color="inherit"
-                                            aria-label="Desactivar"
-                                            size="small">
-                                            <Lock fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>}
-                                    {!row.activo && userAuth._id != row._id && <Tooltip title="Activar">
-                                        <IconButton
-                                            onClick={(e) => handleLock(e, row)}
-                                            color="inherit"
-                                            aria-label="Activar"
-                                            size="small">
-                                            <LockOpen fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>}
                                 </TableCell>
-                                <TableCell >{row.nombre}</TableCell>
-                                <TableCell >{row.pais ? row.pais.nombre : ""}</TableCell>
-                                <TableCell >{row.tipo_coleccion}</TableCell>
-                                <TableCell ><Typography color={row.es_privado ? "primary" : "error"}>
-                                    {row.es_privado ? "Si" : "No"}
-                                </Typography></TableCell>
-                                <TableCell ><Typography color={row.activo ? "primary" : "error"}>
-                                    {row.activo ? "Si" : "No"}
-                                </Typography></TableCell>
+                                <TableCell>{row.nombre}</TableCell>
+                                <TableCell>{row.label}</TableCell>
+                                <TableCell>{row.orden}</TableCell>
+                                <TableCell>{row.padres?row.padres.map((elem)=>elem.label).join(', '):""}</TableCell>
+                                <TableCell>{row.hijos?row.hijos.map((elem)=>elem.label).join(', '):""}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
                 <TablePagination row={row} setRow={setRow} page={page} setPage={setPage} total={total} />
             </TableContainer>
-            <Dialog title="Eliminar Jardín" key="dialog"
-                body="¿Desea eliminar el jardín?"
+            <Dialog title="Eliminar Uso" key="dialog"
+                body="¿Desea eliminar el Uso?"
                 open={openDialog}
                 handlerOk={handleOkDelete}
                 handleCancel={handleCancelDelete} />

@@ -92,7 +92,7 @@ export default ({ match, history }) => {
         if (!values.tipo) {
             errors.tipo = "El Tipo es requerido";
         }
-        if (values.tipo&&values.tipo.nombre!="reino"&&!values.padre) {
+        if (values.tipo&&values.tipo.nombre!="Orden"&&!values.padre) {
             if(padres.length>0){
                 errors.padre = "El padre es requerido";
             }else{

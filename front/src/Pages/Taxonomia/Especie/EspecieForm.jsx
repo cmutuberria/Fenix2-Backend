@@ -13,6 +13,9 @@ import { LOADING_START, LOADING_END, SERVER_ERROR } from "../../../Redux/actionT
 import { loading } from "../../../Redux/selectors";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CategoriaUICN from '../../../Constant/CategoriaUICN';
+import { AddToPhotos } from "@material-ui/icons";
+import Dialog from "../../../Components/Dialog"
+
 
 
 export default ({ match, history }) => {
@@ -26,6 +29,9 @@ export default ({ match, history }) => {
     const [serverErrors, setServerErrors] = useState()
     const { enqueueSnackbar } = useSnackbar();
     const Loading = useSelector(state => loading(state));
+    const [openDialog, setOpenDialog] = useState(false);
+    const [nuevoClasificador, setNuevoClasificador] = useState("valor inicial");
+
 
 
     let { handleChange, handleSubmit, values, errors, handleSelect } = useForm(
@@ -37,25 +43,12 @@ export default ({ match, history }) => {
     const loadObj = async (id) => {
         try {
             dispatch({ type: LOADING_START })
-            const result = await apiCall(`/especie/${id}`, null, null, 'GET')
+            const result = await apiCall(`/estructura/${id}`, null, null, 'GET')
             const objResp = result.data.obj
             setObj({
-                _id:objResp._id,
-                tipo: objResp.estructura.tipo,
-                padre: objResp.estructura.padre,
-                estructura: objResp.estructura,
-                nombre: objResp.nombre,
-                categoria_UICN: CategoriaUICN.find(elem => elem._id == objResp.categoria_UICN),
-                clasificador: objResp.clasificador,
-                origen: objResp.origen,
-                anno_clasificacion: objResp.anno_clasificacion,
-            });
-           /*  setObj({
                 ...objResp,
-                tipo: objResp.estructura.tipo,
-                padre: objResp.estructura.padre,
                 categoria_UICN: CategoriaUICN.find(elem => elem._id == objResp.categoria_UICN),
-            }); */
+            })
             dispatch({ type: LOADING_END });
         } catch (err) {
             dispatch({ type: LOADING_END });
@@ -104,7 +97,6 @@ export default ({ match, history }) => {
         try {
             dispatch({ type: LOADING_START });
             const result = await apiCall(`/estructura/ParentCandidates?tipo=${values.tipo._id}`, null, null, 'GET');
-            console.log(result.data);
             setPadres(result.data);
             dispatch({ type: LOADING_END });
         } catch (err) {
@@ -148,10 +140,9 @@ export default ({ match, history }) => {
             };
             let result = null
             if (id) { 
-                console.log(objSubmit);               
-                result = await apiCall(`/especie/edit/${id}`, objSubmit, null, 'PUT')
+                result = await apiCall(`/estructura/especie/${id}`, objSubmit, null, 'PUT')
             } else {
-                result = await apiCall(`/especie`, objSubmit, null, 'POST')
+                result = await apiCall(`/estructura/especie`, objSubmit, null, 'POST')
             }
             if (result) {
                 enqueueSnackbar(result.data.message, { variant: 'success' })
@@ -179,6 +170,35 @@ export default ({ match, history }) => {
 
     const resetData = () => {
         loadObj(id);
+    }
+
+    const handleCancelAddClasificador = () => {
+        setOpenDialog(false);
+    }
+    const handleOkAddClasificador = async () => {
+        try {
+            dispatch({ type: LOADING_START });
+            setOpenDialog(false);
+            const result = await apiCall(`/colector`, {nombre:nuevoClasificador}, null, 'POST');
+            dispatch({ type: LOADING_END });
+            if (result) {
+                console.log(result);                
+                enqueueSnackbar("Clasificador Creado Correctamente", { variant: 'success' });
+                loadClasificadores()
+                setObj({
+                    ...obj,
+                    clasificador:result.data.obj
+                })
+            }
+        } catch (err) {
+            dispatch({ type: LOADING_END });
+            if (err.response.data.message) {
+                enqueueSnackbar(err.response.data.message, { variant: 'error' });
+            } else {
+                dispatch({ type: SERVER_ERROR, error: err });
+                history.push("/error")
+            }
+        }
     }
 
     return (
@@ -235,24 +255,39 @@ export default ({ match, history }) => {
                                         )}
                                     />}
                                 </Grid>
-                                <Grid item xs={6}>
-                                    {clasificadores && clasificadores.length > 0 && <Autocomplete
-                                        autoComplete
-                                        options={clasificadores}
-                                        getOptionLabel={option => option.nombre}
-                                        id="clasificador"
-                                        name="clasificador"
-                                        value={values.clasificador || null}
-                                        onChange={(event, newValue) => {
-                                            handleSelect("clasificador", newValue)
-                                        }}
-                                        renderInput={params => (
-                                            <TextField {...params} label="Clasificador"
+                                <Grid item xs={6} container> 
+                                <Grid container alignItems="flex-end">                                    
+                                        {clasificadores && <Autocomplete
+                                            autoComplete     
+                                            className={classes.autocompleteInline}                                       
+                                            options={clasificadores}
+                                            getOptionLabel={option => option.nombre}
+                                            id="clasificador"
+                                            name="clasificador"
+                                            value={values.clasificador || null}
+                                            onChange={(event, newValue) => {
+                                                handleSelect("clasificador", newValue)
+                                            }}
+                                            onInputChange={(event, value, reason)=>{
+                                                if (value!=null&&value!="") {
+                                                    setNuevoClasificador(value)                                                
+                                                }
+                                            }}
+                                            renderInput={params => (
+                                                <TextField {...params} label="Clasificador"
                                                 className={classes.textField}
                                                 error={errors.clasificador ? true : false}
                                                 helperText={errors.clasificador} />
-                                        )}
-                                    />}
+                                                )}
+                                                />}
+                                        <AddToPhotos onClick={()=>{
+                                            console.log(nuevoClasificador)
+                                            setOpenDialog(true);
+                                            //salvar y seleccionar
+                                        }} />
+                                        
+                                </Grid>
+                                    
 
                                     <TextField
                                         type="numeric"
@@ -276,24 +311,7 @@ export default ({ match, history }) => {
                                         helperText={errors.origen}
                                     />
                                 </Grid>
-                            </Grid>
-                            {/* tipos && tipos.length > 0 && <Autocomplete
-                                autoComplete
-                                options={tipos}
-                                getOptionLabel={option => option.label}
-                                id="tipo"
-                                name="tipo"
-                                value={values.tipo || null}
-                                onChange={(event, newValue) => {
-                                    handleSelect("tipo", newValue)
-                                }}
-                                renderInput={params => (
-                                    <TextField {...params} label="Tipo*"
-                                        className={classes.textField}
-                                        error={errors.tipo ? true : false}
-                                        helperText={errors.tipo} />
-                                )}
-                            /> */}
+                            </Grid>                            
                         </CardContent>
                         <CardActions className={classes.actions}>
                             {id && <IconButton onClick={resetData} disabled={Loading}><Undo /></IconButton>}
@@ -302,7 +320,13 @@ export default ({ match, history }) => {
                     </form>
                 </Card>
             </div>
+            <Dialog title="Adicionar Clasificador" key="dialog"
+                body="¿Desea adicionar el Clasificador?"
+                open={openDialog}
+                handlerOk={handleOkAddClasificador}
+                handleCancel={handleCancelAddClasificador} />
         </div>
+        
 
     )
 }

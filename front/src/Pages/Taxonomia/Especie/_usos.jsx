@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import {
-    Typography, Card, CardContent, Grid,
-    Button, IconButton, CardActions, Paper, List, ListItem,
+    Typography, Grid,
+    Button, IconButton, Paper, List, ListItem,
     ListItemText,
     ListItemSecondaryAction,
     TextField
@@ -17,18 +17,16 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 
 
 
-export default ({ obj, childrens }) => {
+export default ({ obj }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const [elements, setElements] = useState(childrens);
-    const [selectedChild, setSelectedChild] = useState();
+    const [elements, setElements] = useState(obj.usos);
     const Loading = useSelector(state => loading(state));
     const { enqueueSnackbar } = useSnackbar();
     const [serverErrors, setServerErrors] = useState()
-    const [tipos, setTipos] = useState([]);
+    const [usos, setUsos] = useState();
     const [showForm, setShowForm] = useState(false);
-
-
+   
 
 
     const [values, setValues] = useState({});
@@ -36,23 +34,22 @@ export default ({ obj, childrens }) => {
 
     useEffect(() => {
         if (obj) {
-            loadTipos()
+            loadUsos()
         }
     }, [])
 
-    const loadTipos = async () => {
+    const loadUsos = async () => {
         try {
             dispatch({ type: LOADING_START });
-            const result = await apiCall(`/tipoEstructura/AllChildrens/${obj.estructura.tipo._id}`, null, null, 'GET');
-            setTipos(result.data.obj);
+            const result = await apiCall(`/uso/NotAssigned/${obj._id}`, null, null, 'GET');
+            setUsos(result.data.all);
             dispatch({ type: LOADING_END });
         } catch (err) {
             dispatch({ type: LOADING_END });
             dispatch({ type: SERVER_ERROR, error: err });
-            //history.push("/error")
         }
     };
-    
+
 
     const handleChange = event => {
         const { name, value } = event.target;
@@ -63,11 +60,8 @@ export default ({ obj, childrens }) => {
     };
     function validateForm() {
         let errors1 = {};
-        if (!values.tipo) {
-            errors1.tipo = "El tipo es requerido";
-        }
-        if (!values.nombre) {
-            errors1.nombre = "El nombre es requerido";
+        if (!values.uso) {
+            errors1.uso = "El uso es requerido";
         }
         setErrors(errors1);
         return errors1;
@@ -76,17 +70,14 @@ export default ({ obj, childrens }) => {
         event.preventDefault();
         try {
             if (Object.keys(validateForm()).length === 0) {
-                dispatch({ type: LOADING_START }) 
-                const objSubmit = {...values, padre:obj.estructura}
+                dispatch({ type: LOADING_START })
+                let usos = elements
+                usos.push(values.uso)
                 let result = null
-                if (selectedChild) {
-                    result = await apiCall(`/estructura/${selectedChild._id}`, objSubmit, null, 'PUT')
-                } else {
-                    result = await apiCall(`/estructura`, objSubmit, null, 'POST')                    
-                }
+                result = await apiCall(`/estructura/especie/${obj._id}`, { usos: usos }, null, 'PUT')
                 if (result) {
                     enqueueSnackbar(result.data.message, { variant: 'success' })
-                    loadChildrens()
+                    setElements(usos)
                     resetData()
                 }
                 dispatch({ type: LOADING_END });
@@ -109,33 +100,23 @@ export default ({ obj, childrens }) => {
 
         }
     }
-
     const resetData = () => {
         setValues({})
         setErrors({})
-        setSelectedChild()
+        loadUsos()
     }
-    const loadChildrens = async () => {
-        try {
-            dispatch({ type: LOADING_START });
-            const result = await apiCall(`/estructura/Childrens/${obj.estructura._id}`, null, null, 'GET');
-            setElements(result.data.obj);
-            dispatch({ type: LOADING_END });
-        } catch (err) {
-            dispatch({ type: LOADING_END });
-            dispatch({ type: SERVER_ERROR, error: err });
-            //history.push("/error")
-        }
-    };
+
 
     const handlerDelete = async (item) => {
         try {
             dispatch({ type: LOADING_START })
             let result = null
-            result = await apiCall(`/estructura/${item._id}`,null, null, 'DELETE')
+            const usos = elements.filter((elem) => elem != item)
+            result = await apiCall(`/estructura/especie/${obj._id}`,
+                { usos: usos }, null, 'PUT')
             if (result) {
                 enqueueSnackbar(result.data.message, { variant: 'success' })
-                loadChildrens()
+                setElements(usos)
                 resetData()
             }
             dispatch({ type: LOADING_END });
@@ -148,16 +129,8 @@ export default ({ obj, childrens }) => {
     const render = () => {
         return <List dense>
             {elements.map((item) => <ListItem key={item._id}>
-                <ListItemText primary={item.nombre} secondary={item.tipo.label}/>
+                <ListItemText primary={item.nombre} />
                 <ListItemSecondaryAction >
-                    <IconButton aria-label="Editar" edge="end"
-                        onClick={(e) => {
-                            setSelectedChild(item)
-                            setValues(item) 
-                            setShowForm(true)                         
-                        }}>
-                        <Edit fontSize="small" />
-                    </IconButton>
                     <IconButton aria-label="Eliminar" edge="end"
                         onClick={(e) => {
                             handlerDelete(item)
@@ -171,7 +144,8 @@ export default ({ obj, childrens }) => {
     return (
         <React.Fragment>
             <div className={classes.detailHeader}>
-                <Typography variant="h6">Hijos</Typography>
+                <Typography variant="h6">Usos</Typography>
+
                 {!showForm && <Button endIcon={<ExpandMore />}
                     size="small"
                     onClick={()=>setShowForm(!showForm)}>
@@ -183,34 +157,24 @@ export default ({ obj, childrens }) => {
             </div>
             {showForm&&<Grid>
                 <form onSubmit={handleSubmit} noValidate className={classes.formInline}>
-                {tipos && tipos.length > 0 && <Autocomplete                               
-                                autoComplete
-                                className={classes.autocompleteInline}
-                                options={tipos}
-                                getOptionLabel={option => option.label}
-                                id="tipo"
-                                name="tipo"
-                                value={values.tipo || null}
-                                onChange={(event, newValue) => {
-                                    handleChange({target:{ name: "tipo", value: newValue }})
-                                }}
-                                renderInput={params => (
-                                    <TextField {...params} label="Tipo*"
-                                        className={classes.miniTextFieldInline}
-                                        error={errors.tipo ? true : false}
-                                        helperText={errors.tipo} />
-                                )}
-                            />}
-                            <TextField
+                    {usos && <Autocomplete
+                        autoComplete
+                        className={classes.autocompleteInline}
+                        options={usos}
+                        getOptionLabel={option => option.nombre}
+                        id="uso"
+                        name="uso"
+                        value={values.uso || null}
+                        onChange={(event, newValue) => {
+                            handleChange({ target: { name: "uso", value: newValue } })
+                        }}
+                        renderInput={params => (
+                            <TextField {...params} label="Uso*"
                                 className={classes.miniTextFieldInline}
-                                label="Nombre*"
-                                name="nombre"
-                                id="nombre"
-                                onChange={handleChange}
-                                value={values.nombre || ''}
-                                error={errors.nombre ? true : false}
-                                helperText={errors.nombre}
-                            />
+                                error={errors.uso ? true : false}
+                                helperText={errors.uso} />
+                        )}
+                    />}
                     <Button variant="contained" type="submit"
                         color="primary" size="small" disabled={Loading}>Salvar</Button>
 

@@ -102,7 +102,7 @@ export default ({ history, match }) => {
     }
     
     const handleView = (obj) => {
-        if (obj&&obj.tipo&&obj.tipo.nombre=="especie") {
+        if (obj&&obj.tipo&&obj.tipo.nombre=="Especie") {
             history.push(`/Taxonomia/Especie/Detalle/${obj._id}`)
         }else{
             history.push(`/Taxonomia/Estructura/Detalle/${obj._id}`)
@@ -134,7 +134,8 @@ export default ({ history, match }) => {
                             </Paper>
                         </Grid>                        
                         {childrens && <Grid item xs={4}>
-                            <Childrens obj={obj} childrens={childrens} />
+                            <Childrens obj={obj} childrens={childrens}/>
+                            {/* <Childrens obj={obj} childrens={childrens} handleView={handleView()}/> */}
                         </Grid>}
                     </Grid>}
                 </CardContent>

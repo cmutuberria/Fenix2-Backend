@@ -36,7 +36,7 @@ export default ({ match, history }) => {
     const loadObj = async (id) => {
         try {
             dispatch({ type: LOADING_START });
-            const result = await apiCall(`/jardin/${id}`, null, null, 'GET');
+            const result = await apiCall(`/institucion/${id}`, null, null, 'GET');
             setObj(result.data.obj);
             dispatch({ type: LOADING_END });
         } catch (err) {
@@ -77,7 +77,7 @@ export default ({ match, history }) => {
             errors.tipo_coleccion = "El Tipo de Colección es requerido";
         }
         if (!values.es_privado) {
-            errors.es_privado = "Debe especificar si el jardín es privado o institucional";
+            errors.es_privado = "Debe especificar si la institución es o no privada";
         }
         return errors;
     }
@@ -86,10 +86,10 @@ export default ({ match, history }) => {
             dispatch({ type: LOADING_START });
             let result = null;
             if (id) {
-                result = await apiCall(`/jardin/${id}`, values, null, 'PUT');
+                result = await apiCall(`/institucion/${id}`, values, null, 'PUT');
             } else {
-                const v = values.jardin ? values : { ...values, jardin: userAuth.jardin }
-                result = await apiCall(`/jardin`, v, null, 'POST');
+                const v = values.institucion ? values : { ...values, institucion: userAuth.institucion }
+                result = await apiCall(`/institucion`, v, null, 'POST');
             }
             if (result) {
                 enqueueSnackbar(result.data.message, { variant: 'success' });
@@ -120,7 +120,7 @@ export default ({ match, history }) => {
     return (
         <>
             <div className={classes.header} key="header">
-                <Typography variant="h5" className={classes.title}>Formulario de Jardín</Typography>
+                <Typography variant="h5" className={classes.title}>Formulario de Institución</Typography>
             </div>
             <Paper className={classes.paper} key="paper">
                 <form onSubmit={handleSubmit} noValidate>

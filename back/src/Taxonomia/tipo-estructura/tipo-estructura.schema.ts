@@ -14,5 +14,5 @@ export const tipoEstructuraSchema = new Schema({
         required: true
     },  
     padres: [{ type: Schema.Types.ObjectId, ref: "tipoEstructura" }],    
-    hijos: [{ type: Schema.Types.ObjectId, ref: "tipoEstructura" }],        
+    hijos: [{ type: Schema.Types.ObjectId, ref: "tipoEstructura" }],            
 },{timestamps:true});

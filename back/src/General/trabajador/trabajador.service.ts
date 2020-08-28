@@ -20,7 +20,7 @@ export class TrabajadorService {
         query[field]=value
        return await this.model.countDocuments(query);
     }
-    async getAll(jardin: string, row: number, page: number, filtro: string,
+    async getAll(institucion: string, row: number, page: number, filtro: string,
         sort: string) {
         try {
             let query = {};
@@ -39,13 +39,13 @@ export class TrabajadorService {
                     $text: { $search: filtro },
                 }
             } */
-            if (jardin && jardin != "null" && jardin != "") {
+            if (institucion && institucion != "null" && institucion != "") {
                 query = {
                     ...query,
-                    "jardin": jardin
+                    "institucion": institucion
                 }
             }
-            const data = await this.model.find(query).populate("jardin").sort(sort).limit(row).skip(row * page);
+            const data = await this.model.find(query).populate("institucion").sort(sort).limit(row).skip(row * page);
             const count = await this.model.countDocuments(query);
             return { data, count }
 
@@ -56,7 +56,7 @@ export class TrabajadorService {
 
     async getOne(id: string): Promise<Trabajador> {
         try {
-            return await this.model.findById(id).populate('jardin');
+            return await this.model.findById(id).populate('institucion');
         } catch (e) { // MongoError
             throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }

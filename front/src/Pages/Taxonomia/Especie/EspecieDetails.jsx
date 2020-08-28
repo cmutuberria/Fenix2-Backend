@@ -10,13 +10,13 @@ import useStyles from '../../../style'
 import { useSnackbar } from 'notistack';
 import { LOADING_START, LOADING_END, SERVER_ERROR } from "../../../Redux/actionTypes";
 import { apiCall } from "../../../Redux/Api";
-import { Edit, Delete, AddBox, KeyboardArrowUp, Visibility } from '@material-ui/icons';
+import { Visibility } from '@material-ui/icons';
 import { loading } from "../../../Redux/selectors";
 import CategoriaUICN from '../../../Constant/CategoriaUICN';
 import Sinonimias from "./_sinonimias";
 import NombresComunes from "./_nombresComunes";
 import Childrens from "./_childrens";
-import Usos from "./Usos";
+import Usos from "./_usos";
 
 
 
@@ -41,14 +41,18 @@ export default ({ history, match }) => {
     const loadObj = async (id) => {
         try {
             dispatch({ type: LOADING_START });
-            const result = await apiCall(`/especie/${id}`, null, null, 'GET');
-            const especie = result.data.obj
-            setObj(especie)
-            const estructura = await apiCall(`/estructura/OneWithParentsAndChildrens/${especie.estructura._id}`, null, null, 'GET');
+            // const result = await apiCall(`/estructura/${id}`, null, null, 'GET');
+            // const especie = result.data.obj
+            // setObj(especie)
+            // const estructura = await apiCall(`/estructura/OneWithParentsAndChildrens/${especie._id}`, null, null, 'GET');
+            const estructura = await apiCall(`/estructura/OneWithParentsAndChildrens/${id}`, null, null, 'GET');
+            setObj(estructura.data.obj)
             setParents(estructura.data.parents)
             setChildrens(estructura.data.childrens)
             dispatch({ type: LOADING_END });
         } catch (err) {
+            console.log(err);
+
             dispatch({ type: LOADING_END });
             dispatch({ type: SERVER_ERROR, error: err });
             history.push("/error")
@@ -58,7 +62,7 @@ export default ({ history, match }) => {
     const handleDelete = async (obj) => {
         try {
             dispatch({ type: LOADING_START });
-            const result = await apiCall(`/especie/${obj._id}`, null, null, 'DELETE');
+            const result = await apiCall(`/estructura/${obj._id}`, null, null, 'DELETE');
             dispatch({ type: LOADING_END });
             if (result) {
                 enqueueSnackbar(result.data.message, { variant: 'success' });
@@ -104,7 +108,7 @@ export default ({ history, match }) => {
                             <List>
                                 <ListItem divider key={obj._id}>
                                     <ListItemText primary={<Typography variant="h5">{obj.nombre}</Typography>}
-                                        secondary={obj.estructura.tipo.label}>
+                                        secondary={obj.tipo.label}>
                                     </ListItemText>
                                 </ListItem>
                                 <ListItem key="categoria_UICN">
@@ -114,7 +118,7 @@ export default ({ history, match }) => {
                                 </ListItem>
                                
                                 <ListItem key="clasificador">
-                                    <ListItemText primary={obj.clasificador.nombre}
+                                    <ListItemText primary={obj.clasificador?.nombre}
                                         secondary="Clasificador">
                                     </ListItemText>
                                 </ListItem>
@@ -128,9 +132,9 @@ export default ({ history, match }) => {
                                         secondary="Origen">
                                     </ListItemText>
                                 </ListItem>
-                            </List>
+                            </List> 
                         </Grid>
-                        <Grid item xs={3}>
+                       <Grid item xs={3}>
                         <div className={classes.detailHeader}>
                             <Typography variant="h6" >Clasificación</Typography>
                         </div>
@@ -138,7 +142,7 @@ export default ({ history, match }) => {
                                 {renderParents()}
                             </Paper>
                         </Grid>
-                        {<Grid item xs={3}>
+                          {<Grid item xs={3}>
                             <Sinonimias obj={obj} />
                         </Grid>}
                         {<Grid item xs={3}>
@@ -150,7 +154,7 @@ export default ({ history, match }) => {
                         {childrens && <Grid item xs={6}>
                             <Childrens obj={obj} childrens={childrens} />
                         </Grid>}
-                    </Grid>}
+                    </Grid>} 
 
                 </CardContent>
                 {obj && obj._id && <CardActions className={classes.detailActions}>

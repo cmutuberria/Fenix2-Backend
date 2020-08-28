@@ -1,4 +1,4 @@
-export class JardinDTO {
+export class InstitucionDTO {
     readonly nombre: string;
     readonly pais: string;
     readonly es_privado: boolean;

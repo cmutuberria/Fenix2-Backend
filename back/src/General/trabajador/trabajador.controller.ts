@@ -5,10 +5,17 @@ import {
 import { TrabajadorService } from './trabajador.service';
 import { TrabajadorDTO } from './trabajador.dto';
 import  {roles}  from "./roles.enum";
+// import * as bcrypt from "bcryptjs";
 
 @Controller('trabajador')
 export class TrabajadorController {
     constructor(private TrabajadorService: TrabajadorService) { };
+    /*@Get('/sha')
+    async sha(@Res() res, @Query() queryParams) {
+        const { pass } = queryParams;
+        
+        return res.status(HttpStatus.OK).json({pass:await bcrypt.hash(pass, 10)})
+    }*/
     @Get('/unique')
     async isUnique(@Res() res, @Query() queryParams) {
         const { field, value, _id } = queryParams;
@@ -47,8 +54,8 @@ export class TrabajadorController {
     }
     @Get('/')
     async getAll(@Res() res, @Query() queryParams) {
-        const { jardin, row, page, filtro, sort } = queryParams;
-        const all = await this.TrabajadorService.getAll(jardin, parseInt(row), parseInt(page), filtro, sort);
+        const { institucion, row, page, filtro, sort } = queryParams;
+        const all = await this.TrabajadorService.getAll(institucion, parseInt(row), parseInt(page), filtro, sort);
         return res.status(HttpStatus.OK).json(all)
     }
     @Get('/:id')

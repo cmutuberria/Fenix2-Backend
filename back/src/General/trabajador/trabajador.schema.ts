@@ -8,7 +8,7 @@ export const trabajadorSchema = new Schema({
         type:Boolean,
         default:false,
     },
-    jardin: { type: Schema.Types.ObjectId, ref: "jardin" },
+    institucion: { type: Schema.Types.ObjectId, ref: "institucion" },
     nombre: {
         type: String,
         required: true

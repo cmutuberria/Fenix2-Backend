@@ -58,7 +58,7 @@ export default ({ obj }) => {
                     sinonimias.push(values.nombre)
                 }
                 let result = null
-                result = await apiCall(`/especie/${obj._id}`, { sinonimias: sinonimias }, null, 'PUT')
+                result = await apiCall(`/estructura/especie/${obj._id}`, { sinonimias: sinonimias }, null, 'PUT')
                 if (result) {
                     enqueueSnackbar(result.data.message, { variant: 'success' })
                     setElements(sinonimias)
@@ -96,7 +96,7 @@ export default ({ obj }) => {
             dispatch({ type: LOADING_START })
             let result = null
             const sinonimias = elements.filter((elem) => elem != item)
-            result = await apiCall(`/especie/${obj._id}`,
+            result = await apiCall(`/estructura/especie/${obj._id}`,
                 { sinonimias: sinonimias }, null, 'PUT')
             if (result) {
                 enqueueSnackbar(result.data.message, { variant: 'success' })
@@ -112,7 +112,7 @@ export default ({ obj }) => {
 
     const render = () => {
         return <List dense>
-            {elements.map((item) => <ListItem key={item._id}>
+            {elements.map((item, i) => <ListItem key={i}>
                 <ListItemText primary={item} />
                 <ListItemSecondaryAction >
                     <IconButton aria-label="Editar" edge="end"

@@ -41,7 +41,7 @@ export default ({ history }) => {
     const list = async () => {
         try {
             dispatch({ type: LOADING_START });
-            let params = `jardin=${userAuth.jardin}&row=${row}&page=${page}`
+            let params = `jardin=${userAuth.jardin?userAuth.jardin:null}&row=${row}&page=${page}`
             if (filtro) {
                 params += `&filtro=${filtro}`
             }
@@ -145,7 +145,7 @@ export default ({ history }) => {
                             <SortableCell columnKey="usuario_general" columnLabel="General"
                                sort={sort} 
                                setSort={setSort} />
-                            <TableCell>Jardín</TableCell>
+                            <TableCell>Institución</TableCell>
                             <SortableCell columnKey="activo" columnLabel="Activo"
                                 sort={sort} 
                                 setSort={setSort} />

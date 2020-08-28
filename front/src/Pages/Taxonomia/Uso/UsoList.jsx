@@ -52,6 +52,7 @@ export default ({ history }) => {
             setTotal(count);
             dispatch({ type: LOADING_END });
         } catch (err) {
+            console.log(err);
             dispatch({ type: LOADING_END });
             dispatch({ type: SERVER_ERROR, error: err });
             history.push("/error")

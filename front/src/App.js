@@ -21,9 +21,9 @@ import TrabajadorForm from './Pages/Configuracion/Trabajador/TrabajadorForm';
 import TrabajadorList from './Pages/Configuracion/Trabajador/TrabajadorList';
 import PaisList from './Pages/Configuracion/Pais/PaisList';
 import PaisForm from './Pages/Configuracion/Pais/PaisForm';
-import JardinList from './Pages/Configuracion/Jardin/JardinList';
-import JardinForm from './Pages/Configuracion/Jardin/JardinForm';
-import JardinDetail from './Pages/Configuracion/Jardin/JardinDetail';
+import JardinList from './Pages/Configuracion/Institucion/InstitucionList';
+import JardinForm from './Pages/Configuracion/Institucion/InstitucionForm';
+import JardinDetail from './Pages/Configuracion/Institucion/InstitucionDetail';
 import ColectorList from './Pages/Configuracion/Colector/ColectorList';
 import ColectorForm from './Pages/Configuracion/Colector/ColectorForm';
 import EspecieList from './Pages/Taxonomia/Especie/EspecieList';
@@ -32,6 +32,10 @@ import Arbol from './Pages/Taxonomia/Estructura/Arbol';
 import EstructuraForm from './Pages/Taxonomia/Estructura/EstructuraForm';
 import EstructuraDetails from './Pages/Taxonomia/Estructura/EstructuraDetails';
 import EspecieDetails from './Pages/Taxonomia/Especie/EspecieDetails';
+import TipoEstructuraList from './Pages/Taxonomia/TipoEstructura/TipoEstructuraList';
+import TipoEstructuraForm from './Pages/Taxonomia/TipoEstructura/TipoEstructuraForm';
+import UsoList from './Pages/Taxonomia/Uso/UsoList';
+import UsoForm from './Pages/Taxonomia/Uso/UsoForm';
 
 // function App({store, history}) {
 function App({store, history}) {
@@ -74,6 +78,9 @@ function App({store, history}) {
               <SecureRoute exact path="/Configuracion/Colector/Formulario" component={ColectorForm} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Configuracion/Colector/Formulario/:id" component={ColectorForm} roles={["Administrador_General"]} /> 
               {/* taxonomia */}
+              <SecureRoute exact path="/Taxonomia/TipoEstructura" component={TipoEstructuraList} roles={["Administrador_General"]} /> 
+              <SecureRoute exact path="/Taxonomia/TipoEstructura/Formulario" component={TipoEstructuraForm} roles={["Administrador_General"]} /> 
+              <SecureRoute exact path="/Taxonomia/TipoEstructura/Formulario/:id" component={TipoEstructuraForm} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/Estructura" component={Arbol} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/Estructura/Formulario" component={EstructuraForm} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/Estructura/Formulario/:id" component={EstructuraForm} roles={["Administrador_General"]} /> 
@@ -82,6 +89,9 @@ function App({store, history}) {
               <SecureRoute exact path="/Taxonomia/Especie/Formulario" component={EspecieForm} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/Especie/Formulario/:id" component={EspecieForm} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/Especie/Detalle/:id" component={EspecieDetails} roles={["Administrador_General"]} /> 
+              <SecureRoute exact path="/Taxonomia/Usos" component={UsoList} roles={["Administrador_General"]} /> 
+              <SecureRoute exact path="/Taxonomia/Uso/Formulario" component={UsoForm} roles={["Administrador_General"]} /> 
+              <SecureRoute exact path="/Taxonomia/Uso/Formulario/:id" component={UsoForm} roles={["Administrador_General"]} /> 
               
            </Switch>
           </Container>

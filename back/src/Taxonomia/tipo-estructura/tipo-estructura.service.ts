@@ -16,7 +16,7 @@ export class TipoEstructuraService {
                 query["nombre"] = { $regex: filtro, $options: 'i' }
 
             }
-            const data = await this.model.find(query).sort(sort).limit(row).skip(row * page).populate("padre");
+            const data = await this.model.find(query).sort(sort).limit(row).skip(row * page).populate("padres  hijos");
             const count = await this.model.countDocuments(query);
             return { data, count }
 
@@ -27,7 +27,7 @@ export class TipoEstructuraService {
     async all() {
         try {
             // return await this.model.find().sort("orden");
-            return await this.model.find({"nombre": {$ne:"especie"}}).sort("orden").populate("padres");
+            return await this.model.find({"nombre": {$ne:"especie"}}).sort("orden").populate("padres hijos");
         } catch (e) { // MongoError
             throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -35,14 +35,14 @@ export class TipoEstructuraService {
 
     async getOne(id: string): Promise<TipoEstructura> {
         try {
-            return await this.model.findById(id).populate("padre");
+            return await this.model.findById(id).populate("padres hijos");;
         } catch (e) { // MongoError
             throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     async getEspecie(): Promise<TipoEstructura> {
         try {
-            return await this.model.findOne({nombre:{$eq:"especie"}}).populate("padre");
+            return await this.model.findOne({nombre:{$eq:"Especie"}}).populate("padres hijos");;
         } catch (e) { // MongoError
             throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }

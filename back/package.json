@@ -25,6 +25,7 @@
     "@nestjs/mongoose": "^6.1.2",
     "@nestjs/passport": "^6.1.0",
     "@nestjs/platform-express": "^6.0.0",
+    "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "materialize-css": "^1.0.0",
     "moment": "^2.24.0",

@@ -22,7 +22,7 @@ export default ({ history, match }) => {
     const loadObj = async (id) => {
         try {
             dispatch({ type: LOADING_START });
-            const result = await apiCall(`/jardin/${id}`, null, null, 'GET');
+            const result = await apiCall(`/institucion/${id}`, null, null, 'GET');
             setObj(result.data.obj);
             dispatch({ type: LOADING_END });
         } catch (err) {
@@ -38,7 +38,7 @@ export default ({ history, match }) => {
     return (
         <React.Fragment>
             <div className={classes.header}>
-                <Typography variant="h5" className={classes.title}>Detalle del Jardín</Typography>
+                <Typography variant="h5" className={classes.title}>Detalle de la Institución</Typography>
             </div>
             <Card className={classes.card}>
                 <CardContent className={classes.detail}>
@@ -77,7 +77,7 @@ export default ({ history, match }) => {
                 </CardContent>
                 {obj._id && <CardActions className={classes.detailActions}>
                     <Button variant="contained" color="primary" disabled={Loading}
-                        onClick={() => history.push(`/Configuracion/Jardin/Formulario/${obj._id}`)}>
+                        onClick={() => history.push(`/Configuracion/Institucion/Formulario/${obj._id}`)}>
                         Editar</Button>
                 </CardActions>}
             </Card>

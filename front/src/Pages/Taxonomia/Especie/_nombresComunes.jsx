@@ -57,7 +57,7 @@ export default ({ obj }) => {
                     nombres_comunes.push(values.nombre)
                 }
                 let result = null
-                result = await apiCall(`/especie/${obj._id}`, { nombres_comunes: nombres_comunes }, null, 'PUT')
+                result = await apiCall(`/estructura/especie/${obj._id}`, { nombres_comunes: nombres_comunes }, null, 'PUT')
                 if (result) {
                     enqueueSnackbar(result.data.message, { variant: 'success' })
                     setElements(nombres_comunes)
@@ -95,7 +95,7 @@ export default ({ obj }) => {
             dispatch({ type: LOADING_START })
             let result = null
             const nombres_comunes = elements.filter((elem) => elem != item)
-            result = await apiCall(`/especie/${obj._id}`,
+            result = await apiCall(`/estructura/especie/${obj._id}`,
                 { nombres_comunes: nombres_comunes }, null, 'PUT')
             if (result) {
                 enqueueSnackbar(result.data.message, { variant: 'success' })
@@ -111,7 +111,7 @@ export default ({ obj }) => {
 
     const render = () => {
         return <List dense>
-            {elements.map((item) => <ListItem key={item._id}>
+            {elements.map((item, i) => <ListItem key={i}>
                 <ListItemText primary={item} />
                 <ListItemSecondaryAction >
                     <IconButton aria-label="Editar" edge="end"

@@ -43,7 +43,7 @@ export default ({ obj, childrens }) => {
     const loadTipos = async () => {
         try {
             dispatch({ type: LOADING_START });
-            const result = await apiCall(`/tipoEstructura/AllChildrens/${obj.estructura.tipo._id}`, null, null, 'GET');
+            const result = await apiCall(`/tipoEstructura/Childrens/${obj.tipo._id}`, null, null, 'GET');
             setTipos(result.data.obj);
             dispatch({ type: LOADING_END });
         } catch (err) {
@@ -77,7 +77,7 @@ export default ({ obj, childrens }) => {
         try {
             if (Object.keys(validateForm()).length === 0) {
                 dispatch({ type: LOADING_START }) 
-                const objSubmit = {...values, padre:obj.estructura}
+                const objSubmit = {...values, padre:obj._id}
                 let result = null
                 if (selectedChild) {
                     result = await apiCall(`/estructura/${selectedChild._id}`, objSubmit, null, 'PUT')
@@ -118,7 +118,7 @@ export default ({ obj, childrens }) => {
     const loadChildrens = async () => {
         try {
             dispatch({ type: LOADING_START });
-            const result = await apiCall(`/estructura/Childrens/${obj.estructura._id}`, null, null, 'GET');
+            const result = await apiCall(`/estructura/Childrens/${obj._id}`, null, null, 'GET');
             setElements(result.data.obj);
             dispatch({ type: LOADING_END });
         } catch (err) {
