@@ -101,7 +101,7 @@ export class EstructuraService {
             throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    async getOne(id: string): Promise<Estructura> {
+    async getOne(id: string):Promise<any> {
         try {
             return await this.model.findById(id).populate({
                 path: 'padre',

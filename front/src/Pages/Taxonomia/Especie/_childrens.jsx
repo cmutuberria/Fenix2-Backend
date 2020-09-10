@@ -17,7 +17,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 
 
 
-export default ({ obj, childrens }) => {
+export default ({ obj, childrens, handleView }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const [elements, setElements] = useState(childrens);
@@ -150,6 +150,12 @@ export default ({ obj, childrens }) => {
             {elements.map((item) => <ListItem key={item._id}>
                 <ListItemText primary={item.nombre} secondary={item.tipo.label}/>
                 <ListItemSecondaryAction >
+                <IconButton aria-label="Detalle" edge="end"
+                        onClick={(e) => 
+                            handleView(item)
+                        }>
+                        <Visibility fontSize="small" />
+                    </IconButton>
                     <IconButton aria-label="Editar" edge="end"
                         onClick={(e) => {
                             setSelectedChild(item)
@@ -171,7 +177,7 @@ export default ({ obj, childrens }) => {
     return (
         <React.Fragment>
             <div className={classes.detailHeader}>
-                <Typography variant="h6">Hijos</Typography>
+                <Typography variant="h6">Nieveles Taxonómicos Inferiores</Typography>
                 {!showForm && <Button endIcon={<ExpandMore />}
                     size="small"
                     onClick={()=>setShowForm(!showForm)}>

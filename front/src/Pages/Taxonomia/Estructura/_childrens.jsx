@@ -154,8 +154,7 @@ export default ({ obj, childrens, handleView }) => {
                 <ListItemSecondaryAction >
                     <IconButton aria-label="Detalle" edge="end"
                         onClick={(e) => 
-                        // handleView(item)
-                        console.log(item)
+                        handleView(item)
                         }>
                         <Visibility fontSize="small" />
                     </IconButton>
@@ -180,7 +179,7 @@ export default ({ obj, childrens, handleView }) => {
     return (
         <React.Fragment>
             <div className={classes.detailHeader}>
-                <Typography variant="h6">Hijos</Typography>
+                <Typography variant="h6">Nieveles Taxonómicos Inferiores</Typography>
                 {!showForm && <Button endIcon={<ExpandMore />}
                     size="small"
                     onClick={()=>setShowForm(!showForm)}>

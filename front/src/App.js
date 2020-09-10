@@ -36,6 +36,7 @@ import TipoEstructuraList from './Pages/Taxonomia/TipoEstructura/TipoEstructuraL
 import TipoEstructuraForm from './Pages/Taxonomia/TipoEstructura/TipoEstructuraForm';
 import UsoList from './Pages/Taxonomia/Uso/UsoList';
 import UsoForm from './Pages/Taxonomia/Uso/UsoForm';
+import upload from './Pages/Taxonomia/Especie/upload';
 
 // function App({store, history}) {
 function App({store, history}) {
@@ -46,6 +47,7 @@ function App({store, history}) {
   const Loading = useSelector(state => loading(state));
 
   useEffect(()=>{
+    console.log("process.env.REACT_APP_BASE_URL",process.env.REACT_APP_BASE_URL);
      if (token) {
         dispatch(loadUserByToken(token))
     }
@@ -92,6 +94,8 @@ function App({store, history}) {
               <SecureRoute exact path="/Taxonomia/Usos" component={UsoList} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/Uso/Formulario" component={UsoForm} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/Uso/Formulario/:id" component={UsoForm} roles={["Administrador_General"]} /> 
+              
+              <SecureRoute exact path="/Taxonomia/Especie/Upload" component={upload} roles={["Administrador_General"]} /> 
               
            </Switch>
           </Container>

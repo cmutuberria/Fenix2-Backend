@@ -14,9 +14,9 @@ import { loading } from "../../../Redux/selectors";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CategoriaUICN from '../../../Constant/CategoriaUICN';
 import { AddToPhotos } from "@material-ui/icons";
-import Dialog from "../../../Components/Dialog"
-
-
+import Dialog from "../../../Components/Dialog";
+import uniqueID from "../../../Utils/uniqueID";
+var fs = require('fs');
 
 export default ({ match, history }) => {
     const dispatch = useDispatch();
@@ -138,11 +138,20 @@ export default ({ match, history }) => {
                 ...values,
                 categoria_UICN: values.categoria_UICN._id,
             };
+            const headers = {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            }
+            const data = new FormData()
+            data.append('img_individuo',values.img_individuo)
+            data.append('img_img_herbario',values.img_herbario)
+            console.log(data);
             let result = null
             if (id) { 
-                result = await apiCall(`/estructura/especie/${id}`, objSubmit, null, 'PUT')
+                result = await apiCall(`/estructura/especie/${id}`, data, headers, 'PUT')
             } else {
-                result = await apiCall(`/estructura/especie`, objSubmit, null, 'POST')
+                result = await apiCall(`/estructura/especie`, data, headers, 'POST')
             }
             if (result) {
                 enqueueSnackbar(result.data.message, { variant: 'success' })
@@ -200,13 +209,27 @@ export default ({ match, history }) => {
             }
         }
     }
+    
 
+    const handleFiles=(e)=> { 
+        const file = e.target.files[0]
+        const name = e.target.name
+        handleSelect(name, file)
+        if (file!=null) {            
+            var reader = new FileReader()
+            reader.onload = function(){
+                var output = document.getElementById('output_'+name);
+                output.src = reader.result
+            };
+            reader.readAsDataURL(file)
+        }
+      }
     return (
         <div className={classes.rootForm}>
             <div>
                 <Typography variant="h3" className={classes.header}>Formulario de Especie</Typography>
                 <Card>
-                    <form onSubmit={handleSubmit} noValidate>
+                    <form onSubmit={handleSubmit} noValidate encType="multipart/form-data">
                         <CardContent>
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
@@ -310,6 +333,42 @@ export default ({ match, history }) => {
                                         error={errors.origen ? true : false}
                                         helperText={errors.origen}
                                     />
+                                </Grid>
+                                <Grid item xs={6}>                                    
+                                <label htmlFor="img_individuo">
+                                    <input
+                                        style={{ display: 'none' }}
+                                        id="img_individuo"
+                                        name="img_individuo"
+                                        type="file"
+                                        onChange={handleFiles}
+                                        accept="image/*"
+                                    />
+                                    <div className={classes.textFieldFile}>
+                                        <Button color="secondary" variant="contained" component="span">
+                                            Cargar Imagen Individuo
+                                        </Button>
+                                        <img id="output_img_individuo" width="300" height="300"></img>
+                                    </div>
+                                </label>                                                                                                                
+                                </Grid>
+                                <Grid item xs={6}>                                    
+                                <label htmlFor="img_herbario">
+                                    <input
+                                        style={{ display: 'none' }}
+                                        id="img_herbario"
+                                        name="img_herbario"
+                                        type="file"
+                                        onChange={handleFiles}
+                                        accept="image/*"
+                                    />
+                                    <div className={classes.textFieldFile}>
+                                        <Button color="secondary" variant="contained" component="span">
+                                            Cargar Muestra Hebario
+                                        </Button>
+                                        <img id="output_img_herbario" width="300" height="300"></img>
+                                    </div>
+                                </label>                                                                                                                
                                 </Grid>
                             </Grid>                            
                         </CardContent>

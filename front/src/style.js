@@ -61,7 +61,7 @@ const useStyles = makeStyles(theme => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing(3),
+        padding: theme.spacing(3,1),
         marginTop: theme.spacing(6),
     },
 
@@ -111,6 +111,13 @@ const useStyles = makeStyles(theme => ({
             marginRight: theme.spacing(2),
         }
     },
+    detailActionsRight: {
+        display:"flex",
+        justifyContent: 'flex-end',
+        '& Button': {
+            marginRight: theme.spacing(2),
+        }
+    },
 
     /**Forms */
     formInline: {
@@ -119,6 +126,19 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'space-between', 
         alignItems: "flex-end",           
         width: "100%", 
+    },
+    textFieldFile: {
+        display:"flex",
+        flexDirection:"column",
+        justifyContent: 'space-between', 
+        alignItems: "flex-start",  
+
+        marginTop: theme.spacing(4),
+        width: "90%",
+        flexGrow: 1,
+        '& img': {
+            margin: theme.spacing(1, 0),
+        },
     },
     textField: {
         marginTop: theme.spacing(4),
@@ -205,6 +225,8 @@ const useStyles = makeStyles(theme => ({
         top: 20,
         width: 1,
       },
+// GridList
+
 }));
 
 

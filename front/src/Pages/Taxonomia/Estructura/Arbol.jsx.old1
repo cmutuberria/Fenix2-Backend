@@ -24,8 +24,6 @@ import {
 } from "../../../Redux/actionTypes";
 import { loading } from "../../../Redux/selectors";
 import useStyles1 from "../../../style";
-import _arbol from "./_arbol";
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -51,12 +49,126 @@ TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
 };
+function GmailTreeView(props) {
+  const {
+    node,
+    nodeId,
+    labelText,
+    labelIcon: LabelIcon,
+    labelInfo,
+    color,
+    bgColor,
+    handleView,
+    ...other
+  } = props;
+  const classes = useStyles();
+  const [childNodes, setChildNodes] = React.useState(null);
+  const [expanded, setExpanded] = React.useState([]);
+  const [iconAction, setIconAction] = React.useState(false);
+
+  async function fetchChildNodes(id) {
+    const result = await apiCall(
+      `/estructura/Childrens/${id}`,
+      null,
+      null,
+      "GET"
+    );
+    // return result.data.obj[0].hijos;
+    return result.data.obj;
+  }
+
+  const handleChange = async (event, nodes) => {
+    const expandingNodes = nodes.filter((x) => !expanded.includes(x));
+    setExpanded(nodes);
+
+    if (expandingNodes[0]) {
+      const childId = expandingNodes[0];
+      const hijos = await fetchChildNodes(childId);
+      setChildNodes(
+        hijos.map((node) => (
+          <GmailTreeView
+            node={node}
+            key={node._id}
+            nodeId={node._id}
+            labelText={node.nombre}
+            labelIcon={SupervisorAccount}
+            labelInfo={node.tipo.label}
+            handleView={handleView}
+            color="#1a73e8"
+            bgColor="#e8f0fe"
+          />
+        ))
+      );
+    }
+  };
+
+  return (
+    <TreeView
+      defaultCollapseIcon={<ExpandMore />}
+      defaultExpandIcon={<ChevronRight />}
+      expanded={expanded}
+      onNodeToggle={handleChange}
+    >
+      {/*The node below should act as the root node for now */}
+      <TreeItem
+        nodeId={nodeId}
+        label={
+          <div className={classes.labelRoot}>
+            <div className={classes.labelText}>
+              <Typography variant="body2" className={classes.labelPrimary}>
+                {labelText}
+              </Typography>
+              <Typography
+                variant="caption"
+                color="inherit"
+                className={classes.labelSecondary}
+              >
+                {labelInfo}
+              </Typography>
+            </div>
+            <div className={classes.labelIcons}>
+              <Visibility
+                fontSize="small"
+                onClick={(e) => handleView(e, node)}
+              />
+            </div>
+          </div>
+        }
+        style={{
+          "--tree-view-color": color,
+          "--tree-view-bg-color": bgColor,
+        }}
+        classes={{
+          root: classes.root,
+          content: classes.content,
+          expanded: classes.expanded,
+          //selected: classes.selected,
+          //group: classes.group,
+          label: classes.label,
+        }}
+      >
+        {childNodes || [<div key="stub" />]}
+      </TreeItem>
+    </TreeView>
+  );
+}
+GmailTreeView.propTypes = {
+  bgColor: PropTypes.string,
+  color: PropTypes.string,
+  labelIcon: PropTypes.elementType.isRequired,
+  labelInfo: PropTypes.string,
+  labelText: PropTypes.string.isRequired,
+};
 
 export default ({ history }) => {
-  const classes = useStyles1();
-  const [value, setValue] = React.useState(0);
   const dispatch = useDispatch();
+  const classes = useStyles1();
   const Loading = useSelector((state) => loading(state));
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const [nodes, setNodes] = useState();
 
@@ -76,9 +188,6 @@ export default ({ history }) => {
     }
   };
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
   const handleAddEstructura = () => {
     history.push(`/Taxonomia/Estructura/Formulario`);
   };
@@ -91,6 +200,21 @@ export default ({ history }) => {
     } else {
       history.push(`/Taxonomia/Estructura/Detalle/${node1._id}`);
     }
+  };
+  const arbol = () => {
+    return nodes?.map((node) => (
+      <GmailTreeView
+        node={node}
+        key={node._id}
+        nodeId={node._id}
+        labelText={node.nombre}
+        labelIcon={SupervisorAccount}
+        labelInfo={node.tipo.label}
+        handleView={handleView}
+        color="#1a73e8"
+        bgColor="#e8f0fe"
+      />
+    ));
   };
 
   return (
@@ -107,7 +231,7 @@ export default ({ history }) => {
               color={"primary"}
               onClick={handleAddEstructura}
             >
-              Adicionar Clasificación
+              Adicionar Estructura
             </Button>
             <Button
               variant="contained"
@@ -122,8 +246,7 @@ export default ({ history }) => {
       </Toolbar>
       <Card>
         <CardContent>
-        <_arbol handleView={handleView} nodes={nodes} /> 
-          {/* <AppBar position="static" color="default">
+          <AppBar position="static" color="default">
             <Tabs
               value={value}
               onChange={handleChange}
@@ -141,11 +264,11 @@ export default ({ history }) => {
             </Tabs>
           </AppBar>
           <TabPanel value={value} index={0}>
-            <_arbol />
+            {arbol()}
           </TabPanel>
           <TabPanel value={value} index={1}>
             Item Two
-          </TabPanel> */}
+          </TabPanel>
         </CardContent>
       </Card>
     </>

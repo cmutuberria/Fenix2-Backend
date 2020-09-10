@@ -1,14 +1,69 @@
 import {
     Controller, Get, Post, Delete, Put,
-    Res, HttpStatus, Body, Param, NotFoundException, Query
+    Res, HttpStatus, Body, Param, NotFoundException, Query, UseInterceptors, UploadedFiles
 } from '@nestjs/common';
+import {AnyFilesInterceptor} from '@nestjs/platform-express';
 import { EstructuraService } from './estructura.service';
 import { EstructuraDTO } from './estructura.dto';
 import { EspecieDTO } from './especie.dto';
+import { diskStorage } from "multer";
+import { extname } from "path";
+import * as fs from 'fs';
 
+const storageOptions = diskStorage({
+    destination: "./uploads/taxonomia",
+    filename: (req, file, callback) => {
+      callback(null, generateFilename(file));
+    }
+  });
+  
+  // You may want to move this function into a separate file then import it to make it cleaner
+  function generateFilename(file) {
+    return `${Date.now()}${extname(file.originalname)}`;
+  }
+  
 @Controller('estructura')
 export class EstructuraController {
     constructor(private estructuraService: EstructuraService) { };
+
+    @Post('upload')
+    @UseInterceptors(AnyFilesInterceptor({
+        storage: storageOptions
+      }))
+    uploadFile(@Res() res,@Body() estructuraDTO: any, @UploadedFiles() files) {
+        estructuraDTO.img_individuo=files[0]?files[0].path:"" 
+        estructuraDTO.img_herbario=files[1]?files[1].path:"" 
+        console.log("estructuraDTO",estructuraDTO)
+        console.log("files",files);
+
+        return res.status(HttpStatus.OK).json({
+            message: 'Estructura creada correctamente',
+        })
+    }
+
+    @Post('img-individuo')
+    @UseInterceptors(AnyFilesInterceptor({
+        storage: storageOptions
+      }))
+   async imgIndividuo(@Res() res,@Body() data: any, @UploadedFiles() files) { 
+           
+       const especieDTO = new EspecieDTO()
+       especieDTO.img_individuo=files[0]?files[0].path:""
+       const oldObj = await this.estructuraService.getOne(data._id);
+       if (oldObj&&oldObj.img_individuo!=null) {
+           fs.unlink(oldObj.img_individuo,(err) => {
+            if (err) {
+              console.error(err)
+            }
+        });
+       }
+       const obj = await this.estructuraService.update(data._id, especieDTO);
+
+        return res.status(HttpStatus.OK).json({
+            message: `${oldObj.tipo.nombre} creada correctamente`,
+        })
+    }
+
 
     @Post('/')
     async create(@Res() res, @Body() estructuraDTO: EstructuraDTO) {

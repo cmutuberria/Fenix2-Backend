@@ -13,10 +13,15 @@ import { EspecieModule } from './Taxonomia/especie/especie.module';
 import { EstructuraModule } from './Taxonomia/estructura/estructura.module';
 import { TipoEstructuraModule } from './Taxonomia/tipo-estructura/tipo-estructura.module';
 import { CategoriaUICNModule } from './General/categoria-uicn/categoria-uicn.module';
+import { UtilsModule } from './utils/utils.module';
+
+
+// You may want to move this variable into a separate file then import it to make it cleaner
 
 @Module({
   imports: [MongooseModule.forRoot(uri, { useNewUrlParser: true, useFindAndModify: false }),
     AuthModule, 
+    UtilsModule,
     // Configuracion general
     TrabajadorModule, PaisModule, InstitucionModule, ColectorModule, CategoriaUICNModule,
     // Taxonomia

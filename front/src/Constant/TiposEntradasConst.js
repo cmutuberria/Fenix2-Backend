@@ -1,6 +1,5 @@
 import React from 'react'
-import { Edit, Delete, Visibility, DirectionsWalk, DirectionsBus, 
-    Business, Class, PhotoCamera, ChevronLeft, ChevronRight } from '@material-ui/icons';
+import {DirectionsWalk, DirectionsBus,Business, Class, PhotoCamera } from '@material-ui/icons';
 
 export const tiposLabel={
           entradaLibre:"Libre",
