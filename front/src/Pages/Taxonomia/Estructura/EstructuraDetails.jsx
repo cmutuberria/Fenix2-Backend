@@ -42,7 +42,7 @@ export default ({ history, match }) => {
   const id = match.params.id;
   const [obj, setObj] = useState();
   const [parents, setParents] = useState([]);
-  const [childrens, setChildrens] = useState();
+  // const [childrens, setChildrens] = useState();
   const Loading = useSelector((state) => loading(state));
   const { enqueueSnackbar } = useSnackbar();
   const [value, setValue] = React.useState(0);
@@ -69,7 +69,7 @@ export default ({ history, match }) => {
       );
       setObj(result.data.obj);
       setParents(result.data.parents);
-      setChildrens(result.data.childrens);
+      // setChildrens(result.data.childrens);
       dispatch({ type: LOADING_END });
     } catch (err) {
       dispatch({ type: LOADING_END });
@@ -77,23 +77,7 @@ export default ({ history, match }) => {
       history.push("/error");
     }
   };
-  const loadChildrens = async () => {
-    try {
-      dispatch({ type: LOADING_START });
-      const result = await apiCall(
-        `/estructura/Childrens/${id}`,
-        null,
-        null,
-        "GET"
-      );
-      setChildrens(result.data.obj);
-      dispatch({ type: LOADING_END });
-    } catch (err) {
-      dispatch({ type: LOADING_END });
-      dispatch({ type: SERVER_ERROR, error: err });
-      //history.push("/error")
-    }
-  };
+  
 
   const handleDelete = async (obj, permanecer) => {
     try {
@@ -107,9 +91,8 @@ export default ({ history, match }) => {
       dispatch({ type: LOADING_END });
       if (result) {
         enqueueSnackbar(result.data.message, { variant: "success" });
-        if (permanecer) {
-          loadChildrens();
-        } else {
+        if (!permanecer) {
+          // loadChildrens();
           history.push("/Taxonomia/Estructura");
         }
       }
@@ -156,7 +139,7 @@ export default ({ history, match }) => {
     <React.Fragment>
       <div className={classes.header}>
         <Typography variant="h5" className={classes.title}>
-          Detalle de Estructura
+          {`Detalle de ${obj?obj.tipo.label:""}`}
         </Typography>
       </div>
       <Card className={classes.card}>
@@ -166,7 +149,7 @@ export default ({ history, match }) => {
           </div>
           {obj && (
             <Grid container spacing={3}>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <List>
                   <ListItem divider key={obj._id}>
                     <ListItemText
@@ -178,7 +161,7 @@ export default ({ history, match }) => {
                   </ListItem>
                 </List>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={6}>
                 <div className={classes.detailHeader}>
                   <Typography variant="h6" className={classes.padd1}>
                     Clasificación
@@ -186,16 +169,13 @@ export default ({ history, match }) => {
                 </div>
                 <Paper variant="outlined">{renderParents()}</Paper>
               </Grid>
-              {childrens && obj.tipo.hijos.length > 0 && (
-                <Grid item xs={4}>
-                  {/* <Childrens obj={obj} childrens={childrens}/> */}
+                <Grid item xs={12}>
                   <Childrens
                     obj={obj}
-                    childrens={childrens}
+                    // childrens={childrens}
                     handleView={handleView}
                   />
                 </Grid>
-              )}
             </Grid>
           )}
         </CardContent>

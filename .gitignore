@@ -3,6 +3,8 @@
 back/dist
 back/node_modules
 back/backup
+back/uploads
+
 
 # Tests
 back/coverage

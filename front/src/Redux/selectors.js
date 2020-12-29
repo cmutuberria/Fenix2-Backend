@@ -9,3 +9,6 @@ export const isAuthenticated = state => get(state, "auth.isAuthenticated");
 export const token = state => get(state, "auth.token");
 export const authError = state => get(state, "auth.error");
 export const authLoading = state => get(state, "auth.loading");
+/* lang */
+export const langSelected = state => get(state, "lang.lang");
+

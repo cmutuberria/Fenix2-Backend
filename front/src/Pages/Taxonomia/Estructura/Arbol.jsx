@@ -82,11 +82,11 @@ export default ({ history }) => {
   const handleAddEstructura = () => {
     history.push(`/Taxonomia/Estructura/Formulario`);
   };
-  const handleAddEspecie = () => {
+  const handleAddTaxon = () => {
     history.push(`/Taxonomia/Especie/Formulario`);
   };
   const handleView = (e, node1) => {
-    if (node1 && node1.tipo && node1.tipo.nombre == "Especie") {
+    if (node1 && node1.tipo && node1.tipo.vista_ampliada) {
       history.push(`/Taxonomia/Especie/Detalle/${node1._id}`);
     } else {
       history.push(`/Taxonomia/Estructura/Detalle/${node1._id}`);
@@ -113,9 +113,9 @@ export default ({ history }) => {
               variant="contained"
               size="small"
               color="primary"
-              onClick={handleAddEspecie}
+              onClick={handleAddTaxon}
             >
-              Adicionar Especie
+              Adicionar Taxón
             </Button>
           </Grid>
         }

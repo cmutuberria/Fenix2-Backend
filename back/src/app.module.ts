@@ -14,6 +14,7 @@ import { EstructuraModule } from './Taxonomia/estructura/estructura.module';
 import { TipoEstructuraModule } from './Taxonomia/tipo-estructura/tipo-estructura.module';
 import { CategoriaUICNModule } from './General/categoria-uicn/categoria-uicn.module';
 import { UtilsModule } from './utils/utils.module';
+import { AmenazaModule } from './General/amenaza/amenaza.module';
 
 
 // You may want to move this variable into a separate file then import it to make it cleaner
@@ -24,6 +25,7 @@ import { UtilsModule } from './utils/utils.module';
     UtilsModule,
     // Configuracion general
     TrabajadorModule, PaisModule, InstitucionModule, ColectorModule, CategoriaUICNModule,
+    AmenazaModule,
     // Taxonomia
     TipoEstructuraModule, EstructuraModule, UsoModule, EspecieModule],
   controllers: [AppController],

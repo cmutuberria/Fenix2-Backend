@@ -10,6 +10,7 @@ import SecureRoute from './Components/SecureRoute';
 import Login from './Pages/Login/Login';
 import { isAuthenticated } from "./Redux/selectors"
 import {loadUserByToken} from './Redux/Actions/auth'
+import {loadLang, change_language} from './Redux/Actions/lang';
 import LinearProgress from './Components/LinearProgress'
 import { loading } from "./Redux/selectors"
 import Error from './Pages/Error';
@@ -37,16 +38,27 @@ import TipoEstructuraForm from './Pages/Taxonomia/TipoEstructura/TipoEstructuraF
 import UsoList from './Pages/Taxonomia/Uso/UsoList';
 import UsoForm from './Pages/Taxonomia/Uso/UsoForm';
 import upload from './Pages/Taxonomia/Especie/upload';
+import ImagenIndividuoForm from './Pages/Taxonomia/Especie/ImagenIndividuoForm';
+import MuestraHerbarioForm from './Pages/Taxonomia/Especie/MuestraHerbarioForm';
+import AmenazaList from './Pages/Configuracion/Amenaza/AmenazaList';
+import AmenazaForm from './Pages/Configuracion/Amenaza/AmenazaForm';
+import FiltroEstructuras from './Pages/Taxonomia/Filtro/FiltroEstructuras';
 
 // function App({store, history}) {
 function App({store, history}) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const token = localStorage.getItem('token');
+  const lang = localStorage.getItem('lang');
   const userIsAuthenticated = useSelector(state => isAuthenticated(state));
   const Loading = useSelector(state => loading(state));
 
   useEffect(()=>{
+    if (lang) {
+      dispatch(loadLang(lang))
+    }else{
+      dispatch(change_language("es"))
+    }
     console.log("process.env.REACT_APP_BASE_URL",process.env.REACT_APP_BASE_URL);
      if (token) {
         dispatch(loadUserByToken(token))
@@ -79,6 +91,9 @@ function App({store, history}) {
               <SecureRoute exact path="/Configuracion/Colectores" component={ColectorList} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Configuracion/Colector/Formulario" component={ColectorForm} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Configuracion/Colector/Formulario/:id" component={ColectorForm} roles={["Administrador_General"]} /> 
+              <SecureRoute exact path="/Configuracion/Amenazas" component={AmenazaList} roles={["Administrador_General"]} /> 
+              <SecureRoute exact path="/Configuracion/Amenaza/Formulario" component={AmenazaForm} roles={["Administrador_General"]} /> 
+              <SecureRoute exact path="/Configuracion/Amenaza/Formulario/:id" component={AmenazaForm} roles={["Administrador_General"]} /> 
               {/* taxonomia */}
               <SecureRoute exact path="/Taxonomia/TipoEstructura" component={TipoEstructuraList} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/TipoEstructura/Formulario" component={TipoEstructuraForm} roles={["Administrador_General"]} /> 
@@ -90,12 +105,15 @@ function App({store, history}) {
               <SecureRoute exact path="/Taxonomia/Especies" component={EspecieList} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/Especie/Formulario" component={EspecieForm} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/Especie/Formulario/:id" component={EspecieForm} roles={["Administrador_General"]} /> 
+              <SecureRoute exact path="/Taxonomia/Especie/ImgRepresentativa/:id" component={ImagenIndividuoForm} roles={["Administrador_General"]} /> 
+              <SecureRoute exact path="/Taxonomia/Especie/MuestraHerbario/:id" component={MuestraHerbarioForm} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/Especie/Detalle/:id" component={EspecieDetails} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/Usos" component={UsoList} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/Uso/Formulario" component={UsoForm} roles={["Administrador_General"]} /> 
               <SecureRoute exact path="/Taxonomia/Uso/Formulario/:id" component={UsoForm} roles={["Administrador_General"]} /> 
+              <SecureRoute exact path="/Taxonomia/Filtro" component={FiltroEstructuras} roles={["Administrador_General"]} /> 
               
-              <SecureRoute exact path="/Taxonomia/Especie/Upload" component={upload} roles={["Administrador_General"]} /> 
+              {/* <SecureRoute exact path="/Taxonomia/Especie/Upload" component={upload} roles={["Administrador_General"]} />  */}
               
            </Switch>
           </Container>

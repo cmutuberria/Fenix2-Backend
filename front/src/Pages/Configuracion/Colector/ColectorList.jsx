@@ -107,6 +107,9 @@ export default ({ history }) => {
                     <TableHead>
                         <TableRow>
                             <TableCell></TableCell>
+                            <SortableCell columnKey="acronimo" columnLabel="Acrónimo"
+                                sort={sort}
+                                setSort={setSort} />
                             <SortableCell columnKey="nombre" columnLabel="Nombre"
                                 sort={sort}
                                 setSort={setSort} />
@@ -135,6 +138,7 @@ export default ({ history }) => {
                                         </IconButton>
                                     </Tooltip>
                                 </TableCell>
+                                <TableCell>{row.acronimo}</TableCell>
                                 <TableCell>{row.nombre}</TableCell>
                             </TableRow>
                         ))}

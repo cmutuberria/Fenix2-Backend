@@ -9,15 +9,16 @@ export class TipoEstructuraService {
     constructor(@InjectModel('tipoEstructura') private readonly model: Model<TipoEstructura>) { }
 
     async getAll(row: number, page: number, filtro: string,
-        sort: string, tipo: string) {
+        sort: string) {
         try {
-            let query = { tipo: tipo };
+            let query = {};
             if (filtro && filtro != "null" && filtro != "") {
                 query["nombre"] = { $regex: filtro, $options: 'i' }
 
             }
             const data = await this.model.find(query).sort(sort).limit(row).skip(row * page).populate("padres  hijos");
             const count = await this.model.countDocuments(query);
+            console.log(query);
             return { data, count }
 
         } catch (e) { // MongoError
@@ -27,7 +28,16 @@ export class TipoEstructuraService {
     async all() {
         try {
             // return await this.model.find().sort("orden");
-            return await this.model.find({"nombre": {$ne:"especie"}}).sort("orden").populate("padres hijos");
+            return await this.model.find().sort("orden").populate("padres hijos");
+        } catch (e) { // MongoError
+            throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    async allEstructurasByEsTaxon(es_taxon:boolean) {
+        try {
+            // return await this.model.find().sort("orden");
+            return await this.model.find({"es_taxon":es_taxon}).sort("orden").populate("padres hijos");
         } catch (e) { // MongoError
             throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -78,6 +88,46 @@ export class TipoEstructuraService {
                 }
             },{
                 $match: {nombre: {$ne:"especie" } }
+            },{ 
+                $sort: { "orden": 1, "nombre": 1 } },
+            ]);
+        } catch (e) { // MongoError
+            throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    async getClasificacionChildrens(id: string) {
+        try {
+            return await this.model.aggregate([{
+                $addFields: {
+                    convertedId: { $toString: "$_id" }
+                }
+            }, {
+                $match: { convertedId: id}
+            },
+            {
+                $unwind: "$hijos"
+            }, {
+                $lookup: {
+                    from: "tipoestructuras",
+                    localField: "hijos",
+                    foreignField: "_id",
+                    as: "hijo"
+                }
+            },{
+                $unwind: "$hijo"
+            },{
+                $project:
+                {
+                    _id: "$hijo._id",
+                    nombre: "$hijo.nombre",
+                    label: "$hijo.label",
+                    orden: "$hijo.orden",
+                    es_taxon: "$hijo.es_taxon",
+                    
+
+                }
+            },{
+                $match: {es_taxon: false  }
             },{ 
                 $sort: { "orden": 1, "nombre": 1 } },
             ]);

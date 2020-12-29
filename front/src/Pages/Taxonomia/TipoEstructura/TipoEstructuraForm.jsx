@@ -14,7 +14,7 @@ import {
   Input,
   Chip,
   MenuItem,
-  Grid,
+  Grid,FormLabel, RadioGroup, FormControlLabel, Radio, FormHelperText
 } from "@material-ui/core";
 import Undo from "@material-ui/icons/Undo";
 import useStyles from "../../../style";
@@ -32,7 +32,7 @@ export default ({ match, history }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const id = match.params.id;
-  const [obj, setObj] = useState({ nombre: "" });
+  const [obj, setObj] = useState({ nombre: "",es_taxon:"0", vista_ampliada:"0"});
   const [padres, setPadres] = useState([]);
   const [hijos, setHijos] = useState([]);
   const [serverErrors, setServerErrors] = useState();
@@ -42,7 +42,7 @@ export default ({ match, history }) => {
   let { handleChange, handleSubmit, values, errors, handle2Select } = useForm(
     submit,
     validateForm,
-    id ? obj : null,
+    obj,
     serverErrors ? serverErrors : null
   );
   const loadObj = async (id) => {
@@ -50,7 +50,11 @@ export default ({ match, history }) => {
       dispatch({ type: LOADING_START });
       const result = await apiCall(`/tipoEstructura/${id}`, null, null, "GET");
       const obj1 = result.data.obj;
-      setObj(obj1);
+      setObj({
+        ...obj1,
+        es_taxon:obj1.es_taxon?"1":"0",
+        vista_ampliada:obj1.vista_ampliada?"1":"0"
+      })
       handle2Select("padres",obj1.padres, "hijos", obj1.hijos)
       dispatch({ type: LOADING_END });
     } catch (err) {
@@ -169,6 +173,58 @@ export default ({ match, history }) => {
                 error={errors.orden ? true : false}
                 helperText={errors.orden}
               />
+              <FormControl
+                      component="fieldset"
+                      className={classes.textField}
+                    >
+                      <FormLabel component="legend">Es Taxón</FormLabel>
+                      <RadioGroup
+                        row
+                        name="es_taxon"
+                        value={values.es_taxon || "1"}
+                        onChange={handleChange}
+                      >
+                        <FormControlLabel
+                          value="1"
+                          control={<Radio />}
+                          label="Taxón"
+                        />
+                        <FormControlLabel
+                          value="0"
+                          control={<Radio />}
+                          label="Estructura"
+                        />
+                      </RadioGroup>
+                      <FormHelperText>
+                        {errors.es_taxon}
+                      </FormHelperText>
+                    </FormControl>
+                    <FormControl
+                      component="fieldset"
+                      className={classes.textField}
+                    >
+                      <FormLabel component="legend">Vista Ampliada</FormLabel>
+                      <RadioGroup
+                        row
+                        name="vista_ampliada"
+                        value={values.vista_ampliada || "1"}
+                        onChange={handleChange}
+                      >
+                        <FormControlLabel
+                          value="1"
+                          control={<Radio />}
+                          label="Si"
+                        />
+                        <FormControlLabel
+                          value="0"
+                          control={<Radio />}
+                          label="No"
+                        />
+                      </RadioGroup>
+                      <FormHelperText>
+                        {errors.vista_ampliada}
+                      </FormHelperText>
+                    </FormControl>
               <Grid container spacing={3}>
                 <Grid item xs={6}>
                   <FormControl className={classes.textField}>

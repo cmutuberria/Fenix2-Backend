@@ -139,11 +139,11 @@ export default ({ obj }) => {
                 {!showForm && <Button endIcon={<ExpandMore />}
                     size="small"
                     onClick={()=>setShowForm(!showForm)}>
-                    Mostrar</Button>}
+                    Mostrar Formulario</Button>}
                 {showForm && <Button endIcon={<ExpandLess />}
                     size="small"
                     onClick={()=>setShowForm(!showForm)}>
-                    Ocultar</Button>}
+                    Ocultar Formulario</Button>}
             </div>
             {showForm&&<Grid>
                 <form onSubmit={handleSubmit} noValidate className={classes.formInline}>
@@ -151,6 +151,7 @@ export default ({ obj }) => {
                         label="Nombre*"
                         name="nombre"
                         id="nombre"
+                        className={classes.autocompleteInline} 
                         onChange={handleChange}
                         value={values.nombre || ''}
                         error={errors.nombre ? true : false}

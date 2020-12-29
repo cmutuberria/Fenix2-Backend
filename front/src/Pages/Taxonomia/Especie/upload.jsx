@@ -47,7 +47,6 @@ export default ({ match, history }) => {
             dispatch({ type: LOADING_END });
         } catch (err) {
             dispatch({ type: LOADING_END });
-            console.log(err);
         }
     }
 

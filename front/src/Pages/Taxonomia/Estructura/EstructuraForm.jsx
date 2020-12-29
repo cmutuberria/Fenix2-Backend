@@ -65,7 +65,7 @@ export default ({ match, history }) => {
     const loadTipos = async () => {
         try {
             dispatch({ type: LOADING_START });
-            const result = await apiCall(`/tipoEstructura/all`, null, null, 'GET');
+            const result = await apiCall(`/tipoEstructura/all-clasificaciones`, null, null, 'GET');
             setTipos(result.data);
             dispatch({ type: LOADING_END });
         } catch (err) {
@@ -144,7 +144,7 @@ export default ({ match, history }) => {
     return (
         <div className={classes.rootForm}>
             <div>
-                <Typography variant="h3" className={classes.header}>Formulario de Estructura</Typography>
+                <Typography variant="h3" className={classes.header}>Formulario de Clasificación</Typography>
                 <Card>
                     <form onSubmit={handleSubmit} noValidate>
                         <CardContent>

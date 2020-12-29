@@ -1,4 +1,7 @@
-import {makeStyles} from '@material-ui/core/styles';
+import {
+    fade,
+    makeStyles
+} from '@material-ui/core/styles';
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -61,8 +64,9 @@ const useStyles = makeStyles(theme => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing(3,1),
-        marginTop: theme.spacing(6),
+        padding: theme.spacing(3),
+        marginTop: theme.spacing(10),
+        maxWidth: 'calc(100% - 64px)',
     },
 
     nested: {
@@ -78,6 +82,10 @@ const useStyles = makeStyles(theme => ({
     },
     card: {
         padding: theme.spacing(2),
+    },
+    cardFullWidth: {
+        padding: theme.spacing(2),
+        width: "100%"
     },
 
     /*detail*/
@@ -112,7 +120,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     detailActionsRight: {
-        display:"flex",
+        display: "flex",
         justifyContent: 'flex-end',
         '& Button': {
             marginRight: theme.spacing(2),
@@ -121,17 +129,17 @@ const useStyles = makeStyles(theme => ({
 
     /**Forms */
     formInline: {
-        display:"flex",
-        margin: theme.spacing(1,0),
-        justifyContent: 'space-between', 
-        alignItems: "flex-end",           
-        width: "100%", 
+        display: "flex",
+        margin: theme.spacing(1, 0),
+        justifyContent: 'space-between',
+        alignItems: "flex-end",
+        width: "100%",
     },
     textFieldFile: {
-        display:"flex",
-        flexDirection:"column",
-        justifyContent: 'space-between', 
-        alignItems: "flex-start",  
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: 'space-between',
+        alignItems: "flex-start",
 
         marginTop: theme.spacing(4),
         width: "90%",
@@ -165,13 +173,42 @@ const useStyles = makeStyles(theme => ({
         justifyContent: "Center",
     },
     left: {
-        marginTop:theme.spacing(1),
+        marginTop: theme.spacing(1),
         display: "flex",
         justifyContent: "space-between",
         flexDirection: "row-reverse",
     },
-    uploadInput:{
-        display:"none",
+    spaceBetween: {
+        marginTop: theme.spacing(1),
+        display: "flex",
+        justifyContent: "space-between",
+    },
+    center: {
+        marginTop: theme.spacing(1),
+        display: "flex",
+        justifyContent: "center",
+        // flexDirection: "row-reverse",
+    },
+    searchCenter: {
+        marginTop: theme.spacing(1),
+        display: "flex",
+        justifyContent: "center",
+        flexGrow: 1,
+        '& > *': {
+            margin: theme.spacing(2),
+        },
+        // flexDirection: "row-reverse",
+    },
+    // search: {
+    //     flexGrow: 1,
+    //     // borderRadius: theme.shape.borderRadius,
+    //     // backgroundColor: fade(theme.palette.common.white, 0.15),
+    //     // '&:hover': {
+    //     //     backgroundColor: fade(theme.palette.common.white, 0.25),
+    //     // },
+    // },
+    uploadInput: {
+        display: "none",
     },
     /* btn Group */
     btnGroup: {
@@ -191,7 +228,7 @@ const useStyles = makeStyles(theme => ({
     },
     pagination: {
         display: "flex",
-        justifyContent: "flex-start",
+        justifyContent: "flex-end",
     },
     secureMsg: {
         margin: theme.spacing(10),
@@ -205,13 +242,13 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(10),
         display: "flex",
         justifyContent: "center",
-        flexDirection:"column",
-        alignItems:"center",
+        flexDirection: "column",
+        alignItems: "center",
         padding: theme.spacing(10),
-        
+
     },
-    padd1:{
-        padding:theme.spacing(1,0),
+    padd1: {
+        padding: theme.spacing(1, 0),
     },
     /*Table */
     visuallyHidden: {
@@ -224,8 +261,31 @@ const useStyles = makeStyles(theme => ({
         position: 'absolute',
         top: 20,
         width: 1,
-      },
-// GridList
+    },
+
+    iconsBetween: {
+        display: "flex",
+        justifyContent: "space-between",
+    },
+
+    //dialog
+    dialogImg: {
+        margin: theme.spacing(0),
+        padding: theme.spacing(0),
+        overflow: 'auto',
+        lineHeight: theme.spacing(0),
+        '&:first-child': {
+            padding: theme.spacing(0),
+        },
+
+    },
+
+    //avatar
+
+    avatarLarge: {
+        width: theme.spacing(7),
+        height: theme.spacing(7),
+    },
 
 }));
 

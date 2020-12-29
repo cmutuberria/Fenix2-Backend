@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
 import {
     Button, Typography, TableContainer,
-    Table, TableHead, TableRow, TableCell, TableBody, Paper, IconButton, Tooltip
+    Table, TableHead, TableRow, TableCell, TableBody, Paper, IconButton, Tooltip, Avatar
 } from "@material-ui/core";
 import useStyles from '../../../style'
 import { useSnackbar } from 'notistack';
@@ -14,7 +14,7 @@ import SortableCell from '../../../Components/SortableCell';
 import TablePagination from '../../../Components/TablePagination';
 import TableTextFilter from "../../../Components/TableTextFilter";
 import CategoriaUICN from '../../../Constant/CategoriaUICN';
-
+import  showClasificadores from "../../../Utils/showClasificadores";
 
 
 export default ({ history }) => {
@@ -47,7 +47,7 @@ export default ({ history }) => {
             if (sort) {
                 params += `&sort=${sort}`
             }
-            const result = await apiCall(`/estructura/all-especies?${params}`, null, null, 'GET');
+            const result = await apiCall(`/estructura/all-Taxones?${params}`, null, null, 'GET');
             const { data, count } = result.data;
             setData(data);
             setTotal(count);
@@ -62,7 +62,11 @@ export default ({ history }) => {
         history.push(`/Taxonomia/Especie/Formulario`)
     }
     const handleView = (e, obj) => {
-        history.push(`/Taxonomia/Especie/Detalle/${obj._id}`)
+            if (obj && obj.tipo && obj.tipo.vista_ampliada) {
+              history.push(`/Taxonomia/Especie/Detalle/${obj._id}`);
+            } else {
+              history.push(`/Taxonomia/Estructura/Detalle/${obj._id}`);
+            }
     }
     const handleEdit = (e, obj) => {
         history.push(`/Taxonomia/Especie/Formulario/${obj._id}`)
@@ -94,20 +98,25 @@ export default ({ history }) => {
             }
         }
     }
+
+    
+
+
     return (
         <React.Fragment>
             <div className={classes.header}>
-                <Typography variant="h5" className={classes.title}>Listado de Especies</Typography>
+                <Typography variant="h5" className={classes.title}>Listado de Taxones</Typography>
                 <Button color="primary" variant="contained"
                     className={classes.btnMargin}
-                    onClick={handleAdd}>Nueva Especie</Button>
+                    onClick={handleAdd}>Nuevo Taxón</Button>
             </div>
             <TableContainer component={Paper}>
                 <TableTextFilter setPage={setPage} filtro={filtro} 
-                setFiltro={setFiltro} placeholder="Buscar Especie" />
+                setFiltro={setFiltro} placeholder="Buscar Taxón" />
                 <Table aria-label="simple table" size="small">
                     <TableHead>
                         <TableRow>
+                            <TableCell></TableCell>
                             <TableCell></TableCell>
                             <SortableCell columnKey="nombre" columnLabel="Nombre"
                                 sort={sort}
@@ -115,7 +124,7 @@ export default ({ history }) => {
                             <SortableCell columnKey="categoria_UICN" columnLabel="UICN"
                                 sort={sort}
                                 setSort={setSort} />
-                            <TableCell>Clasificador</TableCell>
+                            <TableCell>Clasificador(es)</TableCell>
                             <SortableCell columnKey="anno_clasificacion" columnLabel="Clasificado en:"
                                 sort={sort}
                                 setSort={setSort} />
@@ -156,9 +165,13 @@ export default ({ history }) => {
                                         </IconButton>
                                     </Tooltip>
                                 </TableCell>
+                                <TableCell>
+                                    {row.img_individuo&&<Avatar variant='square' src={`${process.env.REACT_APP_BASE_URL}/utils/img?path=${row.img_individuo.replace(".","-small.")}`} 
+                                    className={classes.avatarLarge} />}
+                                </TableCell>                                
                                 <TableCell>{row.nombre}</TableCell>                                
-                                <TableCell>{CategoriaUICN.find(elem => elem._id == row.categoria_UICN).label}</TableCell>
-                                <TableCell>{row.clasificador?row.clasificador.nombre:""}</TableCell>
+                                <TableCell>{row.categoria_UICN?CategoriaUICN.find(elem => elem._id == row.categoria_UICN).label:""}</TableCell>
+                                <TableCell>{row.clasificadores?showClasificadores(row.clasificadores):""}</TableCell>
                                 <TableCell>{row.anno_clasificacion}</TableCell>
                                 <TableCell>{row.origen}</TableCell>
                             </TableRow>
@@ -168,7 +181,7 @@ export default ({ history }) => {
                 <TablePagination row={row} setRow={setRow} page={page} setPage={setPage} total={total} />
             </TableContainer>
             <Dialog title="Eliminar Especie" key="dialog"
-                body="¿Desea eliminar la Especie?"
+                body="¿Desea eliminar el Taxón?"
                 open={openDialog}
                 handlerOk={handleOkDelete}
                 handleCancel={handleCancelDelete} />

@@ -20,8 +20,9 @@ export class TipoEstructuraController {
 
     @Get('/')
     async getAll(@Res() res, @Query() queryParams) {
-        const { row, page, filtro, sort, tipo } = queryParams;
-        const all = await this.tipoEstructuraService.getAll(parseInt(row), parseInt(page), filtro, sort, tipo);
+        console.log(queryParams);
+        const { row, page, filtro, sort } = queryParams;
+        const all = await this.tipoEstructuraService.getAll(parseInt(row), parseInt(page), filtro, sort);
         return res.status(HttpStatus.OK).json(all)
     }
     
@@ -29,11 +30,31 @@ export class TipoEstructuraController {
     async All(@Res() res) {        
         const all = await this.tipoEstructuraService.all();
         return res.status(HttpStatus.OK).json(all)
+    } 
+    @Get('/All-Clasificaciones')
+    async AllClasificaciones(@Res() res) {        
+        const all = await this.tipoEstructuraService.allEstructurasByEsTaxon(false);
+        return res.status(HttpStatus.OK).json(all)
+    }
+    @Get('/All-Taxones')
+    async AllTaxones(@Res() res) {        
+        const all = await this.tipoEstructuraService.allEstructurasByEsTaxon(true);
+        return res.status(HttpStatus.OK).json(all)
     }
     
     @Get('/Childrens/:id')
     async getChildrens(@Res() res, @Param('id') id: string) {
          const obj = await this.tipoEstructuraService.getChildrens(id);
+        if (!obj) {
+            throw new NotFoundException('Estructura no encontrada');
+        }
+        return res.status(HttpStatus.OK).json({
+            obj
+        })
+    }
+    @Get('/clasificacion-Childrens/:id')
+    async getClasificacionChildrens(@Res() res, @Param('id') id: string) {
+         const obj = await this.tipoEstructuraService.getClasificacionChildrens(id);
         if (!obj) {
             throw new NotFoundException('Estructura no encontrada');
         }

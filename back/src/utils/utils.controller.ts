@@ -6,7 +6,6 @@ export class UtilsController {
 
     @Get('/img')
     getImg(@Query() imgPath, @Res() res ){
-        console.log(imgPath);
         return res.sendFile(imgPath.path, {root:'./'})
     }
 }

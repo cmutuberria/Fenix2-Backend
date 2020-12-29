@@ -48,6 +48,7 @@ export default ({ history }) => {
             }
             const result = await apiCall(`/tipoEstructura?${params}`, null, null, 'GET');
             const { data, count } = result.data;
+            console.log(data);
             setData(data);
             setTotal(count);
             dispatch({ type: LOADING_END });
@@ -114,6 +115,12 @@ export default ({ history }) => {
                         <SortableCell columnKey="orden" columnLabel="Orden"
                                 sort={sort}
                                 setSort={setSort} />
+                        <SortableCell columnKey="es_taxon" columnLabel="Taxón"
+                                sort={sort}
+                                setSort={setSort} />
+                        <SortableCell columnKey="vista_ampliada" columnLabel="Vista Ampliada"
+                                sort={sort}
+                                setSort={setSort} />
                         <TableCell>Padres</TableCell>
                         <TableCell>Hijos</TableCell>
                         </TableRow>
@@ -144,6 +151,8 @@ export default ({ history }) => {
                                 <TableCell>{row.nombre}</TableCell>
                                 <TableCell>{row.label}</TableCell>
                                 <TableCell>{row.orden}</TableCell>
+                                <TableCell>{row.es_taxon?"Si":"No"}</TableCell>
+                                <TableCell>{row.vista_ampliada?"Si":"No"}</TableCell>
                                 <TableCell>{row.padres?row.padres.map((elem)=>elem.label).join(', '):""}</TableCell>
                                 <TableCell>{row.hijos?row.hijos.map((elem)=>elem.label).join(', '):""}</TableCell>
                             </TableRow>
