@@ -11,6 +11,7 @@ import { useSnackbar } from 'notistack';
 import { apiCall } from '../../../Redux/Api';
 import { LOADING_START, LOADING_END, SERVER_ERROR } from "../../../Redux/actionTypes";
 import { loading } from "../../../Redux/selectors";
+import { FormattedMessage, useIntl  } from "react-intl";
 
 
 
@@ -22,6 +23,7 @@ export default ({ match, history }) => {
     const [serverErrors, setServerErrors] = useState()
     const { enqueueSnackbar } = useSnackbar();
     const Loading = useSelector(state => loading(state));
+    const intl = useIntl();
 
     let { handleChange, handleSubmit, values, errors } = useForm(
         submit,
@@ -54,7 +56,7 @@ export default ({ match, history }) => {
     function validateForm(values) {
         let errors = {};        
         if (!values.nombre) {
-            errors.nombre = "El Nombre es requerido";
+            errors.nombre = intl.formatMessage({ id: 'amenazas.error.nombre' })
         }
         return errors;
     }
@@ -70,7 +72,6 @@ export default ({ match, history }) => {
             if (result) {
                 enqueueSnackbar(result.data.message, { variant: 'success' });
                 history.push("/Configuracion/Amenazas")
-                //history.goBack();
             }
             dispatch({ type: LOADING_END });
         } catch (err) {
@@ -99,13 +100,13 @@ export default ({ match, history }) => {
     return (
         <div className={classes.rootForm}>
             <div>
-                <Typography variant="h3" className={classes.header}>Formulario de Amenaza</Typography>
+                <Typography variant="h3" className={classes.header}><FormattedMessage id="page.amenazas.form.title" /></Typography>
                 <Card>
                     <form onSubmit={handleSubmit} noValidate>
                         <CardContent>
                             <TextField
                                 className={classes.textField}
-                                label="Nombre*"
+                                label={intl.formatMessage({ id: 'amenazas.attr.nombre' })+"*"}
                                 name="nombre"
                                 id="nombre"
                                 onChange={handleChange}
@@ -117,7 +118,7 @@ export default ({ match, history }) => {
                       component="fieldset"
                       className={classes.textField}
                     >
-                      <FormLabel component="legend">Tipo</FormLabel>
+                      <FormLabel component="legend"><FormattedMessage id="amenazas.attr.tipo" /></FormLabel>
                       <RadioGroup
                         row
                         name="tipo"
@@ -127,12 +128,12 @@ export default ({ match, history }) => {
                         <FormControlLabel
                           value="1"
                           control={<Radio />}
-                          label="Amenaza"
+                          label={intl.formatMessage({ id: 'amenazas.label.amenaza' })}
                         />
                         <FormControlLabel
                           value="0"
                           control={<Radio />}
-                          label="Estés"
+                          label={intl.formatMessage({ id: 'amenazas.label.estres' })}
                         />
                       </RadioGroup>
                       <FormHelperText>
@@ -143,7 +144,7 @@ export default ({ match, history }) => {
                         </CardContent>
                         <CardActions className={classes.actions}>
                             {id && <IconButton onClick={resetData} disabled={Loading}><Undo /></IconButton>}
-                            <Button variant="contained" type="submit" color="primary" disabled={Loading}>Salvar</Button>
+                            <Button variant="contained" type="submit" color="primary" disabled={Loading}> <FormattedMessage id="btn.save" /></Button>
                         </CardActions>
                     </form>
                 </Card>

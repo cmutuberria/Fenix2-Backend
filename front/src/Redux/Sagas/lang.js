@@ -1,4 +1,4 @@
-import {put, call, takeLatest} from 'redux-saga/effects';
+import {put, takeLatest} from 'redux-saga/effects';
 import {CHANGE_LANGUAGE_START,
     CHANGE_LANGUAGE_COMPLETE,
     CHANGE_LANGUAGE_ERROR,

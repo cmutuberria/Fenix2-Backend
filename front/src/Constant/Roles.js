@@ -1,6 +1,6 @@
 export const rolesLabel= {
     ADMINISTRADOR_GENERAL: 'Administrador General',
-    TAXONOMICO_GENERAL: 'Taxonómico General',
+    TAXONOMO_GENERAL: 'Taxónomo General',
     USUARIO_GENERAL: 'Usuario General',
     ADMINISTRADOR: 'Administrador',
     DIRECTOR: 'Director',
@@ -13,7 +13,7 @@ export const rolesLabel= {
 }
 export const rolesArray=[
     {_id:"Administrador_General", label:"Administrador General"},
-    {_id:"Taxonomico_General", label:"Taxonómico General"},
+    {_id:"Taxonomo_General", label:"Taxonómico General"},
     {_id:"Usuario_General", label:"Usuario General"},
     {_id:"Administrador", label:"Administrador"},
     {_id:"Director", label:"Director"},
@@ -26,7 +26,7 @@ export const rolesArray=[
 ];
 export const rolesArrayOrigin=[
     "Administrador_General",
-    "Taxonomico_General",
+    "Taxonomo_General",
     "Usuario_General",
     "Administrador",
     "Director",

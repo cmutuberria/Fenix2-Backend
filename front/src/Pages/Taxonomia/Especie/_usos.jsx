@@ -11,9 +11,10 @@ import useStyles from '../../../style'
 import { useSnackbar } from 'notistack';
 import { LOADING_START, LOADING_END, SERVER_ERROR } from "../../../Redux/actionTypes";
 import { apiCall } from "../../../Redux/Api";
-import { Edit, Delete, AddBox, KeyboardArrowUp, Visibility, Save, ExpandMore, ExpandLess } from '@material-ui/icons';
+import { Delete, ExpandMore, ExpandLess } from '@material-ui/icons';
 import { loading } from "../../../Redux/selectors";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { FormattedMessage, useIntl } from "react-intl";
 
 
 
@@ -26,8 +27,7 @@ export default ({ obj }) => {
     const [serverErrors, setServerErrors] = useState()
     const [usos, setUsos] = useState();
     const [showForm, setShowForm] = useState(false);
-   
-
+    const intl = useIntl();   
 
     const [values, setValues] = useState({});
     const [errors, setErrors] = useState({});
@@ -61,7 +61,7 @@ export default ({ obj }) => {
     function validateForm() {
         let errors1 = {};
         if (!values.uso) {
-            errors1.uso = "El uso es requerido";
+            errors1.uso = intl.formatMessage({ id: "especies.error.uso" })
         }
         setErrors(errors1);
         return errors1;
@@ -131,7 +131,7 @@ export default ({ obj }) => {
             {elements.map((item) => <ListItem key={item._id}>
                 <ListItemText primary={item.nombre} />
                 <ListItemSecondaryAction >
-                    <IconButton aria-label="Eliminar" edge="end"
+                    <IconButton aria-label={intl.formatMessage({ id: "btn.delete" })} edge="end"
                         onClick={(e) => {
                             handlerDelete(item)
                         }}>
@@ -144,16 +144,16 @@ export default ({ obj }) => {
     return (
         <React.Fragment>
             <div className={classes.detailHeader}>
-                <Typography variant="h6">Usos</Typography>
+                <Typography variant="h6"><FormattedMessage id="page.especies.detalle.Usos" /></Typography>
 
                 {!showForm && <Button endIcon={<ExpandMore />}
                     size="small"
                     onClick={()=>setShowForm(!showForm)}>
-                    Mostrar</Button>}
+                    <FormattedMessage id="btn.show" /></Button>}
                 {showForm && <Button endIcon={<ExpandLess />}
                     size="small"
                     onClick={()=>setShowForm(!showForm)}>
-                    Ocultar</Button>}
+                    <FormattedMessage id="btn.hide" /></Button>}
             </div>
             {showForm&&<Grid>
                 <form onSubmit={handleSubmit} noValidate className={classes.formInline}>
@@ -169,15 +169,14 @@ export default ({ obj }) => {
                             handleChange({ target: { name: "uso", value: newValue } })
                         }}
                         renderInput={params => (
-                            <TextField {...params} label="Uso*"
+                            <TextField {...params} label={intl.formatMessage({ id: "especies.label.uso" })+"*"}
                                 className={classes.miniTextFieldInline}
                                 error={errors.uso ? true : false}
                                 helperText={errors.uso} />
                         )}
                     />}
                     <Button variant="contained" type="submit"
-                        color="primary" size="small" disabled={Loading}>Salvar</Button>
-
+                        color="primary" size="small" disabled={Loading}><FormattedMessage id="btn.save" /></Button>
                 </form>
             </Grid>}
             <Paper variant="outlined">

@@ -27,6 +27,7 @@ import {
   SERVER_ERROR,
 } from "../../../Redux/actionTypes";
 import { loading } from "../../../Redux/selectors";
+import { FormattedMessage, useIntl } from "react-intl";
 
 export default ({ match, history }) => {
   const dispatch = useDispatch();
@@ -38,6 +39,7 @@ export default ({ match, history }) => {
   const [serverErrors, setServerErrors] = useState();
   const { enqueueSnackbar } = useSnackbar();
   const Loading = useSelector((state) => loading(state));
+  const intl = useIntl();
 
   let { handleChange, handleSubmit, values, errors, handle2Select } = useForm(
     submit,
@@ -88,13 +90,13 @@ export default ({ match, history }) => {
   function validateForm(values) {
     let errors = {};
     if (!values.nombre) {
-      errors.nombre = "El Nombre es requerido";
+      errors.nombre = intl.formatMessage({ id: 'tipoestructura.error.nombre' })
     }
     if (!values.label) {
-      errors.label = "El Label es requerido";
+      errors.label = intl.formatMessage({ id: 'tipoestructura.error.label' })
     }
     if (!values.orden) {
-      errors.orden = "El Orden es requerido";
+      errors.orden = intl.formatMessage({ id: 'tipoestructura.error.orden' })
     }
     return errors;
   }
@@ -137,14 +139,14 @@ export default ({ match, history }) => {
     <div className={classes.rootForm}>
       <div>
         <Typography variant="h3" className={classes.header}>
-          Formulario de Tipo de Estructura
+          <FormattedMessage id="page.tipoestructura.form.title" />  
         </Typography>
         <Card>
           <form onSubmit={handleSubmit} noValidate>
             <CardContent>
               <TextField
                 className={classes.textField}
-                label="Nombre*"
+                label={intl.formatMessage({ id: 'tipoestructura.attr.nombre' })+"*"}
                 name="nombre"
                 id="nombre"
                 onChange={handleChange}
@@ -154,7 +156,7 @@ export default ({ match, history }) => {
               />
               <TextField
                 className={classes.textField}
-                label="Label*"
+                label={intl.formatMessage({ id: 'tipoestructura.attr.label' })+"*"}
                 name="label"
                 id="label"
                 onChange={handleChange}
@@ -165,7 +167,7 @@ export default ({ match, history }) => {
               <TextField
                 className={classes.textField}
                 type="number"
-                label="Orden*"
+                label={intl.formatMessage({ id: 'tipoestructura.attr.orden' })+"*"}
                 name="orden"
                 id="orden"
                 onChange={handleChange}
@@ -177,7 +179,7 @@ export default ({ match, history }) => {
                       component="fieldset"
                       className={classes.textField}
                     >
-                      <FormLabel component="legend">Es Taxón</FormLabel>
+                      <FormLabel component="legend"><FormattedMessage id="tipoestructura.label.es_taxon" /></FormLabel>
                       <RadioGroup
                         row
                         name="es_taxon"
@@ -187,12 +189,12 @@ export default ({ match, history }) => {
                         <FormControlLabel
                           value="1"
                           control={<Radio />}
-                          label="Taxón"
+                          label={intl.formatMessage({ id: 'tipoestructura.attr.taxon' })}
                         />
                         <FormControlLabel
                           value="0"
                           control={<Radio />}
-                          label="Estructura"
+                          label={intl.formatMessage({ id: 'tipoestructura.label.estructura' })}
                         />
                       </RadioGroup>
                       <FormHelperText>
@@ -203,7 +205,7 @@ export default ({ match, history }) => {
                       component="fieldset"
                       className={classes.textField}
                     >
-                      <FormLabel component="legend">Vista Ampliada</FormLabel>
+                      <FormLabel component="legend"><FormattedMessage id="tipoestructura.attr.vista_ampliada" /></FormLabel>
                       <RadioGroup
                         row
                         name="vista_ampliada"
@@ -213,12 +215,12 @@ export default ({ match, history }) => {
                         <FormControlLabel
                           value="1"
                           control={<Radio />}
-                          label="Si"
+                          label={intl.formatMessage({ id: 'si' })}
                         />
                         <FormControlLabel
                           value="0"
                           control={<Radio />}
-                          label="No"
+                          label={intl.formatMessage({ id: 'no' })}
                         />
                       </RadioGroup>
                       <FormHelperText>
@@ -228,7 +230,7 @@ export default ({ match, history }) => {
               <Grid container spacing={3}>
                 <Grid item xs={6}>
                   <FormControl className={classes.textField}>
-                    <InputLabel id="padres">Padres</InputLabel>
+                    <InputLabel id="padres"><FormattedMessage id="tipoestructura.attr.padres" /></InputLabel>
                     <Select
                       labelId="padres"
                       multiple
@@ -259,7 +261,7 @@ export default ({ match, history }) => {
                 </Grid>
                 <Grid item xs={6}>
                   <FormControl className={classes.textField}>
-                    <InputLabel id="hijos">Hijos</InputLabel>
+                    <InputLabel id="hijos"><FormattedMessage id="tipoestructura.attr.hijos" /></InputLabel>
                     <Select
                       labelId="hijos"
                       multiple
@@ -302,7 +304,7 @@ export default ({ match, history }) => {
                 color="primary"
                 disabled={Loading}
               >
-                Salvar
+                <FormattedMessage id="btn.save" />
               </Button>
             </CardActions>
           </form>

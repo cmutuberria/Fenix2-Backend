@@ -1,7 +1,10 @@
 import { IconButton, List, ListItem, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
-import { Delete, Edit, Visibility } from '@material-ui/icons';
-import React, {useState} from 'react';
+import {  Visibility } from '@material-ui/icons';
+import React from 'react';
+import { useIntl  } from "react-intl";
+
 export default ({ objList, handleView }) => {
+    const intl = useIntl();
 
     return (
         <List key="key">
@@ -12,10 +15,12 @@ export default ({ objList, handleView }) => {
                     >                   
                    <ListItemText primary={obj.nombre}
                        secondary={obj.tipo.label} />
-                   {obj.sinonimias &&obj.sinonimias.length>0 &&<ListItemText primary="Sinonimias" secondary={obj.sinonimias.join(", ")} />}
-                   {obj.nombres_comunes &&obj.nombres_comunes.length>0&& <ListItemText primary="Agencia" secondary={obj.nombres_comunes.join(", ")} />}                    
+                   {obj.sinonimias &&obj.sinonimias.length>0 &&<ListItemText primary={intl.formatMessage({ id: 'page.filtroestructuras.list.sinonimias' })} 
+                   secondary={obj.sinonimias.join(", ")} />}
+                   {obj.nombres_comunes &&obj.nombres_comunes.length>0&& <ListItemText primary={intl.formatMessage({ id: 'page.filtroestructuras.list.nombres_comunes' })} 
+                   secondary={obj.nombres_comunes.join(", ")} />}                    
                    <ListItemSecondaryAction>
-                       <IconButton edge="end" aria-label="Editar"
+                       <IconButton edge="end" aria-label={intl.formatMessage({ id: 'table.btn.detail' })}
                            onClick={(e)=>handleView(obj)}>
                            <Visibility />
                        </IconButton>                       

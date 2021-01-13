@@ -1,6 +1,6 @@
 export enum roles{
     Administrador_General="Administrador_General",
-    Taxonomico_General="Taxonomico_General",
+    Taxonomo_General="Taxonomo_General",
     Usuario_General="Usuario_General",
     Administrador="Administrador",
     Director="Director",

@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Typography,
   Card,
   CardContent,
   Grid,
   Button,
-  IconButton,
   CardActions,
-  Paper,
   List,
   ListItem,
   ListItemText,
-  ListItemSecondaryAction,
   TextField,
   FormControl,
   FormLabel,
@@ -29,11 +25,12 @@ import {
   SERVER_ERROR,
 } from "../../../Redux/actionTypes";
 import { apiCall } from "../../../Redux/Api";
-import { error, loading } from "../../../Redux/selectors";
+import { loading } from "../../../Redux/selectors";
 import { meses } from "../../../Constant/Meses";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { FormattedMessage, useIntl } from "react-intl";
 
 export default ({ obj, loadObj }) => {
   const classes = useStyles();
@@ -42,6 +39,7 @@ export default ({ obj, loadObj }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [serverErrors, setServerErrors] = useState();
   const [showForm, setShowForm] = useState(false);
+  const intl = useIntl();
 
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
@@ -74,8 +72,7 @@ export default ({ obj, loadObj }) => {
       values.f_es_peregnifolia == null ||
       values.f_es_peregnifolia == undefined
     ) {
-      errors1.f_es_peregnifolia =
-        "Es obligatorio seleccionar el tipo de follage";
+      errors1.f_es_peregnifolia =intl.formatMessage({ id: "especies.error.f_es_peregnifolia" })
     }
     setErrors(errors1);
     return errors1;
@@ -130,13 +127,13 @@ export default ({ obj, loadObj }) => {
           <List>
             <ListItem key="f_floracion">
               <ListItemText
-                primary="Floración:"
+                primary={intl.formatMessage({ id: "especies.attr.f_floracion" })+":"}
                 secondary={obj.f_floracion ? obj.f_floracion.join(", ") : ""}
               ></ListItemText>
             </ListItem>
             <ListItem key="f_fructificacion">
               <ListItemText
-                primary="Fructificación:"
+                primary={intl.formatMessage({ id: "especies.attr.f_fructificacion" })+":"}
                 secondary={
                   obj.f_fructificacion ? obj.f_fructificacion.join(", ") : ""
                 }
@@ -144,7 +141,7 @@ export default ({ obj, loadObj }) => {
             </ListItem>
             <ListItem key="f_es_peregnifolia">
               <ListItemText
-                primary="Tipo Follage:"
+                primary={intl.formatMessage({ id: "especies.attr.f_es_peregnifolia" })+":"}
                 secondary={
                   obj.f_es_peregnifolia ? "Peregnifolia" : "Caducifolia"
                 }
@@ -156,7 +153,7 @@ export default ({ obj, loadObj }) => {
           <List>
             <ListItem key="f_hojas_desarrollo">
               <ListItemText
-                primary="Hojas Pleno Desarrollo:"
+                primary={intl.formatMessage({ id: "especies.attr.f_hojas_desarrollo" })+":"}
                 secondary={
                   obj.f_hojas_desarrollo
                     ? obj.f_hojas_desarrollo.join(", ")
@@ -166,7 +163,7 @@ export default ({ obj, loadObj }) => {
             </ListItem>
             <ListItem key="f_brotes_florales">
               <ListItemText
-                primary="Brotes Florales:"
+                primary={intl.formatMessage({ id: "especies.attr.f_brotes_florales" })+":"}
                 secondary={
                   obj.f_brotes_florales ? obj.f_brotes_florales.join(", ") : ""
                 }
@@ -175,7 +172,7 @@ export default ({ obj, loadObj }) => {
             {!obj.f_es_peregnifolia && (
               <ListItem key="f_perdida_follage">
                 <ListItemText
-                  primary="Pérdida Follage:"
+                  primary={intl.formatMessage({ id: "especies.attr.f_perdida_follage" })+":"}
                   secondary={
                     obj.f_perdida_follage
                       ? obj.f_perdida_follage.join(", ")
@@ -190,7 +187,7 @@ export default ({ obj, loadObj }) => {
           <List>
             <ListItem key="f_observaciones">
               <ListItemText
-                primary="Observaciones:"
+                primary={intl.formatMessage({ id: "especies.attr.f_observaciones" })+":"}
                 secondary={<ReactQuill
                   id="f_observacionesShow"
                   name="f_observacionesShow"
@@ -237,7 +234,7 @@ export default ({ obj, loadObj }) => {
               disabled={Loading}
               onClick={editData}
             >
-              Editar
+              <FormattedMessage id="btn.edit" />
             </Button>
           </CardActions>
         </Grid>}
@@ -261,7 +258,7 @@ export default ({ obj, loadObj }) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Floración"
+                          label={intl.formatMessage({ id: "especies.attr.f_floracion" })}
                           className={classes.textField}
                           error={errors.f_floracion ? true : false}
                           helperText={errors.f_floracion}
@@ -282,7 +279,7 @@ export default ({ obj, loadObj }) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Fructificación"
+                          label={intl.formatMessage({ id: "especies.attr.f_fructificacion" })}
                           className={classes.textField}
                           error={errors.f_fructificacion ? true : false}
                           helperText={errors.f_fructificacion}
@@ -293,7 +290,7 @@ export default ({ obj, loadObj }) => {
                       component="fieldset"
                       className={classes.textField}
                     >
-                      <FormLabel component="legend">Tipo Follage</FormLabel>
+                      <FormLabel component="legend"><FormattedMessage id="especies.attr.f_es_peregnifolia" /></FormLabel>
                       <RadioGroup
                         row
                         aria-label="gender"
@@ -304,12 +301,12 @@ export default ({ obj, loadObj }) => {
                         <FormControlLabel
                           value="1"
                           control={<Radio />}
-                          label="Peregnifolia"
+                          label={intl.formatMessage({ id: "especies.label.perennifolia" })}
                         />
                         <FormControlLabel
                           value="0"
                           control={<Radio />}
-                          label="Caducifolia"
+                          label={intl.formatMessage({ id: "especies.label.caducifolia" })}
                         />
                       </RadioGroup>
                       <FormHelperText>
@@ -332,7 +329,7 @@ export default ({ obj, loadObj }) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Hojas Pleno Desarrollo"
+                          label={intl.formatMessage({ id: "especies.attr.f_hojas_desarrollo" })}
                           className={classes.textField}
                           error={errors.f_hojas_desarrollo ? true : false}
                           helperText={errors.f_hojas_desarrollo}
@@ -353,7 +350,7 @@ export default ({ obj, loadObj }) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Brotes Frolares"
+                          label={intl.formatMessage({ id: "especies.attr.f_brotes_florales" })}
                           className={classes.textField}
                           error={errors.f_brotes_florales ? true : false}
                           helperText={errors.f_brotes_florales}
@@ -375,7 +372,7 @@ export default ({ obj, loadObj }) => {
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            label="Pérdida Follage"
+                            label={intl.formatMessage({ id: "especies.attr.f_perdida_follage" })}
                             className={classes.textField}
                             error={errors.f_perdida_follage ? true : false}
                             helperText={errors.f_perdida_follage}
@@ -414,9 +411,9 @@ export default ({ obj, loadObj }) => {
                   color="primary"
                   disabled={Loading}
                 >
-                  Salvar
+                  <FormattedMessage id="btn.save" />
                 </Button>
-                <Button variant="contained" color="primary" disabled={Loading} onClick={cancel}>Cancelar</Button>
+                <Button variant="contained" color="primary" disabled={Loading} onClick={cancel}><FormattedMessage id="btn.cancel" /></Button>
 
               </CardActions>
             </form>

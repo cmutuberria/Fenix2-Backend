@@ -7,6 +7,8 @@ import { useSnackbar } from 'notistack';
 import { apiCall } from '../../../Redux/Api';
 import { LOADING_START, LOADING_END, SERVER_ERROR } from "../../../Redux/actionTypes";
 import { loading } from "../../../Redux/selectors";
+import { FormattedMessage, useIntl  } from "react-intl";
+
 
 export default ({ match, history }) => {
     const dispatch = useDispatch();
@@ -16,6 +18,7 @@ export default ({ match, history }) => {
     const [serverErrors, setServerErrors] = useState()
     const { enqueueSnackbar } = useSnackbar();
     const Loading = useSelector(state => loading(state));
+    const intl = useIntl();
 
     let { handleChange, handleSubmit, values, errors } = useForm(
         submit,
@@ -89,7 +92,7 @@ export default ({ match, history }) => {
     return (
         <div className={classes.rootForm}>
             <div>
-                <Typography variant="h3" className={classes.header}>Cambiar contraseña a:</Typography>
+                <Typography variant="h3" className={classes.header}><FormattedMessage id="page.trabajadores.change_pass.title" /></Typography>
                 <Typography variant="h6" className={classes.header}>{obj.nombre}</Typography>
                 <Card>
                     <form onSubmit={handleSubmit} noValidate>
@@ -97,7 +100,7 @@ export default ({ match, history }) => {
                             <TextField
                                 type="password"
                                 className={classes.textField}
-                                label="Contraseña*"
+                                label={intl.formatMessage({ id: 'trabajadores.attr.password' })+"*"}
                                 name="password"
                                 id="password"
                                 onChange={handleChange}
@@ -108,7 +111,7 @@ export default ({ match, history }) => {
                             <TextField
                                 type="password"
                                 className={classes.textField}
-                                label="Repetir Contraseña*"
+                                label={intl.formatMessage({ id: 'trabajadores.attr.password_repeat' })+"*"}
                                 name="password2"
                                 id="password2"
                                 onChange={handleChange}
@@ -118,7 +121,7 @@ export default ({ match, history }) => {
                             />
                         </CardContent>
                         <CardActions className={classes.actions}>
-                            <Button variant="contained" type="submit" color="primary" disabled={Loading}>Salvar</Button>
+                            <Button variant="contained" type="submit" color="primary" disabled={Loading}><FormattedMessage id="btn.save" /></Button>
                         </CardActions>
                     </form>
                 </Card>

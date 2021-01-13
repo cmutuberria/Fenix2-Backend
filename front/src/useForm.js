@@ -27,6 +27,9 @@ const useForm = (callback, validate, initialValues = {},
       [name2]: value2
     });
   };
+  const resetData = () => {
+    setValues({});
+  };
  
   const handleSubmit = event => {
     event.preventDefault();
@@ -53,6 +56,7 @@ const useForm = (callback, validate, initialValues = {},
   }, [serverErrors]);
 
   return {
+    resetData,
     handleChange,
     handleSubmit,
     values,

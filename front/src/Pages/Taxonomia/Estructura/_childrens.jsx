@@ -35,8 +35,11 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import TableTextFilter from "../../../Components/TableTextFilter";
 import SortableCell from "../../../Components/SortableCell";
 import TablePagination from '../../../Components/TablePagination';
+import Dialog from "../../../Components/Dialog";
 
-export default ({ obj, handleView }) => {
+import { FormattedMessage, useIntl  } from "react-intl";
+
+export default ({ obj, handleView}) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [elements, setElements] = useState([]);
@@ -55,14 +58,18 @@ export default ({ obj, handleView }) => {
   const [row, setRow] = useState(10);
   const [filtro, setFiltro] = useState("");
   const [sort, setSort] = useState();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [obj1, setObj1] = useState();
+  const intl = useIntl();
 
-  useEffect(() => {
+ useEffect(() => {
     if (row) {
       loadChildrens();
     }
   }, [page, row, filtro, sort]);
 
   useEffect(() => {
+    resetData()
     if (obj) {
       loadTipos();
       loadChildrens();
@@ -124,10 +131,10 @@ export default ({ obj, handleView }) => {
   function validateForm() {
     let errors1 = {};
     if (!values.tipo) {
-      errors1.tipo = "El tipo es requerido";
+      errors1.tipo = intl.formatMessage({ id: 'estructura.error.tipo' });
     }
     if (!values.nombre) {
-      errors1.nombre = "El nombre es requerido";
+      errors1.nombre = intl.formatMessage({ id: 'estructura.error.nombre' });
     }
     setErrors(errors1);
     return errors1;
@@ -178,11 +185,19 @@ export default ({ obj, handleView }) => {
     setErrors({});
     setSelectedChild();
   };
-  const handlerDelete = async (item) => {
+  const handleDelete = (e, obj1) => {
+    setOpenDialog(true);
+    setObj1(obj1);
+  };
+  const handleCancelDelete = () => {
+    setOpenDialog(false);
+  };
+  const handleOkDelete = async () => {
     try {
       dispatch({ type: LOADING_START });
+      setOpenDialog(false);
       let result = null;
-      result = await apiCall(`/estructura/${item._id}`, null, null, "DELETE");
+      result = await apiCall(`/estructura/${obj1._id}`, null, null, "DELETE");
       if (result) {
         enqueueSnackbar(result.data.message, { variant: "success" });
         loadChildrens();
@@ -197,14 +212,14 @@ export default ({ obj, handleView }) => {
   return (
     <React.Fragment>
       <div className={classes.detailHeader}>
-        <Typography variant="h6">Clasificaciones Inferiores</Typography>
+        <Typography variant="h6"><FormattedMessage id="page.estructura.childrens.clasificaciones_inferiores"/></Typography>
         {!showForm && tipos && tipos.length > 0&& (
           <Button
             endIcon={<ExpandMore />}
             size="small"
             onClick={() => setShowForm(!showForm)}
           >
-            Mostrar
+            <FormattedMessage id="btn.show"/>
           </Button>
         )}
         {showForm && tipos && tipos.length > 0 && (
@@ -213,18 +228,17 @@ export default ({ obj, handleView }) => {
             size="small"
             onClick={() => setShowForm(!showForm)}
           >
-            Ocultar
+            <FormattedMessage id="btn.hide"/>
           </Button>
         )}
       </div>
-      {showForm &&  (
+      {showForm && tipos && tipos.length > 0 &&  (
         <Grid>
           <form
             onSubmit={handleSubmit}
             noValidate
             className={classes.formInline}
           >
-            {tipos && tipos.length > 0 && (
               <Autocomplete
                 autoComplete
                 className={classes.autocompleteInline}
@@ -239,17 +253,16 @@ export default ({ obj, handleView }) => {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Tipo*"
+                    label={intl.formatMessage({ id: 'estructura.attr.tipo' })+"*"}
                     className={classes.miniTextFieldInline}
                     error={errors.tipo ? true : false}
                     helperText={errors.tipo}
                   />
                 )}
               />
-            )}
             <TextField
               className={classes.miniTextFieldInline}
-              label="Nombre*"
+              label={intl.formatMessage({ id: 'estructura.attr.nombre' })+"*"}
               name="nombre"
               id="nombre"
               onChange={handleChange}
@@ -264,7 +277,7 @@ export default ({ obj, handleView }) => {
               size="small"
               disabled={Loading}
             >
-              Salvar
+              <FormattedMessage id="btn.save"/>
             </Button>
           </form>
         </Grid>
@@ -275,7 +288,7 @@ export default ({ obj, handleView }) => {
             setPage={setPage}
             filtro={filtro}
             setFiltro={setFiltro}
-            placeholder="Buscar"
+            placeholder={intl.formatMessage({ id: 'buscar' })}
           />
           <Table aria-label="simple table" size="small">
             <TableHead>
@@ -283,13 +296,13 @@ export default ({ obj, handleView }) => {
                 <TableCell></TableCell>
                 <SortableCell
                   columnKey="nombre"
-                  columnLabel="Nombre"
+                  columnLabel={intl.formatMessage({ id: 'estructura.attr.nombre' })}
                   sort={sort}
                   setSort={setSort}
                 />
                 <SortableCell
                   columnKey="tipo"
-                  columnLabel="Tipo"
+                  columnLabel={intl.formatMessage({ id: 'estructura.attr.tipo' })}
                   sort={sort}
                   setSort={setSort}
                 />
@@ -299,17 +312,17 @@ export default ({ obj, handleView }) => {
               {elements.map((row, i) => (
                 <TableRow key={i}>
                   <TableCell>
-                    <Tooltip title="Detalle">
+                    <Tooltip title={intl.formatMessage({ id: 'table.btn.detail' })}>
                       <IconButton
                         onClick={(e) => handleView(row)}
                         color="inherit"
-                        aria-label="Editar"
+                        aria-label={intl.formatMessage({ id: 'table.btn.detail' })}
                         size="small"
                       >
                         <Visibility fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Editar">
+                    <Tooltip title={intl.formatMessage({ id: 'table.btn.edit' })}>
                       <IconButton
                         onClick={(e) => {
                           setSelectedChild(row);
@@ -317,17 +330,17 @@ export default ({ obj, handleView }) => {
                           setShowForm(true);
                         }}
                         color="inherit"
-                        aria-label="Editar"
+                        aria-label={intl.formatMessage({ id: 'table.btn.edit' })}
                         size="small"
                       >
                         <Edit fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Eliminar">
+                    <Tooltip title={intl.formatMessage({ id: 'table.btn.delete' })}>
                       <IconButton
-                        onClick={(e) => handlerDelete(row)}
+                        onClick={(e) => handleDelete(e, row)}
                         color="inherit"
-                        aria-label="Eliminar"
+                        aria-label={intl.formatMessage({ id: 'table.btn.delete' })}
                         size="small"
                       >
                         <Delete fontSize="small" />
@@ -348,6 +361,14 @@ export default ({ obj, handleView }) => {
             total={total}
           />
         </TableContainer>
+        <Dialog
+        title={intl.formatMessage({ id: 'page.estructura.childrens.dialog.title' })}
+        key="dialog"
+        body={intl.formatMessage({ id: 'page.estructura.childrens.dialog.body' })}
+        open={openDialog}
+        handlerOk={handleOkDelete}
+        handleCancel={handleCancelDelete}
+      />
       </Paper>
     </React.Fragment>
   );

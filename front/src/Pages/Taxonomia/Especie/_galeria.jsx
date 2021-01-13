@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Card,
@@ -9,10 +9,9 @@ import {
   CardHeader,
   Typography,
   FormHelperText,
-  GridList,
-  GridListTile,
-  GridListTileBar,
-  IconButton, CardActionArea, CardMedia
+  IconButton, 
+  CardActionArea, 
+  CardMedia
 } from "@material-ui/core";
 import useStyles from "../../../style";
 import { useSnackbar } from "notistack";
@@ -23,8 +22,10 @@ import {
 } from "../../../Redux/actionTypes";
 import { apiCall } from "../../../Redux/Api";
 import { Delete, GetApp } from "@material-ui/icons";
-import { error, loading } from "../../../Redux/selectors";
+import { loading } from "../../../Redux/selectors";
 import DialogImg from "../../../Components/DialogImg";
+import { FormattedMessage, useIntl } from "react-intl";
+
 
 export default ({ obj, loadObj }) => {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ export default ({ obj, loadObj }) => {
 
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
+  const intl = useIntl();
 
   
   const [open, setOpen] = useState(false);
@@ -49,7 +51,7 @@ export default ({ obj, loadObj }) => {
   function validateForm(values) {
     let errors = {};
     if (!values.imagen) {
-      errors.imagen = "Debe seleccionar una imagen";
+      errors.imagen = intl.formatMessage({ id: "especies.error.imagen" })
     }
     return errors;
   }
@@ -174,7 +176,7 @@ const handelDelete = async (path) => {
             <CardActionArea>
               <CardMedia
                 component="img"
-                alt="Imagen Representativa"
+                alt={intl.formatMessage({ id: "especies.label.imagen" })}
                 height="300"
                 image={`${process.env.REACT_APP_BASE_URL}/utils/img?path=${img}`}
                 onClick={handlerImgFullWith}
@@ -222,7 +224,7 @@ const handelDelete = async (path) => {
                     disabled={Loading}
                     onClick={editData}
                   >
-                    Adicionar Imagen
+                  <FormattedMessage id="page.especies.detalle.adicionar_imagen" />
                   </Button>
                 }
                 // title="Shrimp and Chorizo Paella"
@@ -238,7 +240,7 @@ const handelDelete = async (path) => {
           <div>
             {/* <GaleriaForm obj={obj} loadObj={loadObj} /> */}
             <Typography variant="h3" className={classes.header}>
-              Adicionar Imagen a la Galería
+            <FormattedMessage id="page.especies.detalle.adicionar_imagen_a_galeria" />
             </Typography>
             <Card className={classes.card}>
               <form onSubmit={submit} noValidate encType="multipart/form-data">
@@ -254,7 +256,7 @@ const handelDelete = async (path) => {
                     />
                     <div className={classes.textFieldFile}>
                       <Button color="primary" component="span">
-                        Cargar Imagen
+                        <FormattedMessage id="page.especies.detalle.cargar_imagen" />
                       </Button>
                       {errors.imagen && (
                         <FormHelperText error>{errors.imagen}</FormHelperText>
@@ -270,7 +272,7 @@ const handelDelete = async (path) => {
                     color="primary"
                     disabled={Loading}
                   >
-                    Salvar
+                    <FormattedMessage id="btn.save" />
                   </Button>
                   <Button
                     variant="contained"
@@ -278,7 +280,7 @@ const handelDelete = async (path) => {
                     disabled={Loading}
                     onClick={cancel}
                   >
-                    Cancelar
+                    <FormattedMessage id="btn.cancel" />
                   </Button>
                 </CardActions>
               </form>

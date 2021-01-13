@@ -13,8 +13,7 @@ import { Edit, Delete } from "@material-ui/icons";
 import SortableCell from '../../../Components/SortableCell';
 import TablePagination from '../../../Components/TablePagination';
 import TableTextFilter from "../../../Components/TableTextFilter";
-
-
+import { FormattedMessage, useIntl } from "react-intl";
 
 export default ({ history }) => {
     const classes = useStyles();
@@ -29,6 +28,8 @@ export default ({ history }) => {
     const [row, setRow] = useState();
     const [filtro, setFiltro] = useState("");
     const [sort, setSort] = useState();
+    const intl = useIntl();
+
 
     useEffect(() => {
         if (row) {
@@ -94,19 +95,19 @@ export default ({ history }) => {
     return (
         <React.Fragment>
             <div className={classes.header}>
-                <Typography variant="h5" className={classes.title}>Listado de Usos</Typography>
+                <Typography variant="h5" className={classes.title}><FormattedMessage id="page.usos.list.title" /></Typography>
                 <Button color="primary" variant="contained"
                     className={classes.btnMargin}
-                    onClick={handleAdd}>Nuevo Uso</Button>
+                    onClick={handleAdd}><FormattedMessage id="page.usos.list.btn_new" /></Button>
             </div>
             <TableContainer component={Paper}>
                 <TableTextFilter setPage={setPage} filtro={filtro} 
-                setFiltro={setFiltro} placeholder="Buscar Uso" />
+                setFiltro={setFiltro} placeholder={intl.formatMessage({ id: 'page.usos.list.search' })} />
                 <Table aria-label="simple table" size="small">
                     <TableHead>
                         <TableRow>
                             <TableCell></TableCell>
-                            <SortableCell columnKey="nombre" columnLabel="Nombre"
+                            <SortableCell columnKey="nombre" columnLabel={intl.formatMessage({ id: 'usos.attr.nombre' })}
                                 sort={sort}
                                 setSort={setSort} />
                         </TableRow>
@@ -115,20 +116,20 @@ export default ({ history }) => {
                         {data.map((row, i) => (
                             <TableRow key={i}>
                                 <TableCell>
-                                    <Tooltip title="Editar">
+                                    <Tooltip title={intl.formatMessage({ id: 'table.btn.edit' })}>
                                         <IconButton
                                             onClick={(e) => handleEdit(e, row)}
                                             color="inherit"
-                                            aria-label="Editar"
+                                            aria-label={intl.formatMessage({ id: 'table.btn.edit' })}
                                             size="small">
                                             <Edit fontSize="small" />
                                         </IconButton>
                                     </Tooltip>
-                                    <Tooltip title="Eliminar">
+                                    <Tooltip title={intl.formatMessage({ id: 'table.btn.delete' })}>
                                         <IconButton
                                             onClick={(e) => handleDelete(e, row)}
                                             color="inherit"
-                                            aria-label="Eliminar"
+                                            aria-label={intl.formatMessage({ id: 'table.btn.delete' })}
                                             size="small">
                                             <Delete fontSize="small" />
                                         </IconButton>
@@ -141,8 +142,9 @@ export default ({ history }) => {
                 </Table>
                 <TablePagination row={row} setRow={setRow} page={page} setPage={setPage} total={total} />
             </TableContainer>
-            <Dialog title="Eliminar Uso" key="dialog"
-                body="¿Desea eliminar el Uso?"
+            <Dialog title={intl.formatMessage({ id: 'page.usos.list.dialog.title' })}
+                key="dialog"
+                body={intl.formatMessage({ id: 'page.usos.list.dialog.body' })}
                 open={openDialog}
                 handlerOk={handleOkDelete}
                 handleCancel={handleCancelDelete} />

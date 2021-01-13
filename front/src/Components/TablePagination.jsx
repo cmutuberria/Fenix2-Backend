@@ -24,6 +24,7 @@ export default ({ page=0, setPage, row=10, setRow, total}) => {
                     onChangePage={handleChangePage}
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 //className={classes.pagination}
+                
 
                 />
     )

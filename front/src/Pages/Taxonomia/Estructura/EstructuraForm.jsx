@@ -12,6 +12,7 @@ import { apiCall } from '../../../Redux/Api';
 import { LOADING_START, LOADING_END, SERVER_ERROR } from "../../../Redux/actionTypes";
 import { loading } from "../../../Redux/selectors";
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { FormattedMessage, useIntl  } from "react-intl";
 
 
 export default ({ match, history }) => {
@@ -24,7 +25,7 @@ export default ({ match, history }) => {
     const [serverErrors, setServerErrors] = useState()
     const { enqueueSnackbar } = useSnackbar();
     const Loading = useSelector(state => loading(state));
-
+    const intl = useIntl();
 
     let { handleChange, handleSubmit, values, errors, handleSelect } = useForm(
         submit,
@@ -90,17 +91,17 @@ export default ({ match, history }) => {
     function validateForm(values) {
         let errors = {};
         if (!values.tipo) {
-            errors.tipo = "El Tipo es requerido";
+            errors.tipo = intl.formatMessage({ id: 'estructura.error.tipo' });
         }
         if (values.tipo&&values.tipo.nombre!="Orden"&&!values.padre) {
             if(padres.length>0){
-                errors.padre = "El padre es requerido";
+                errors.padre = intl.formatMessage({ id: 'estructura.error.padre' });
             }else{
-                errors.tipo = "No hay padres disponibles para el tipo seleccionado";
+                errors.tipo = intl.formatMessage({ id: 'estructura.error.tipo2' });
             }
         }
         if (!values.nombre) {
-            errors.nombre = "El nombre es requerido";
+            errors.nombre = intl.formatMessage({ id: 'estructura.error.nombre' });
         }
         return errors;
     }
@@ -144,7 +145,7 @@ export default ({ match, history }) => {
     return (
         <div className={classes.rootForm}>
             <div>
-                <Typography variant="h3" className={classes.header}>Formulario de Clasificación</Typography>
+                <Typography variant="h3" className={classes.header}><FormattedMessage id="page.estructura.form.title" /></Typography>
                 <Card>
                     <form onSubmit={handleSubmit} noValidate>
                         <CardContent>
@@ -159,7 +160,7 @@ export default ({ match, history }) => {
                                     handleSelect("tipo", newValue)
                                 }}
                                 renderInput={params => (
-                                    <TextField {...params} label="Tipo*"
+                                    <TextField {...params} label={intl.formatMessage({ id: 'estructura.attr.tipo' })+"*"}
                                         className={classes.textField}
                                         error={errors.tipo ? true : false}
                                         helperText={errors.tipo} />
@@ -176,7 +177,7 @@ export default ({ match, history }) => {
                                     handleSelect("padre", newValue)
                                 }}
                                 renderInput={params => (
-                                    <TextField {...params} label="Padre*"
+                                    <TextField {...params} label={intl.formatMessage({ id: 'estructura.attr.padre' })+"*"}
                                         className={classes.textField}
                                         error={errors.padre ? true : false}
                                         helperText={errors.padre} />
@@ -184,7 +185,7 @@ export default ({ match, history }) => {
                             />}
                             <TextField
                                 className={classes.textField}
-                                label="Nombre*"
+                                label={intl.formatMessage({ id: 'estructura.attr.nombre' })+"*"}
                                 name="nombre"
                                 id="nombre"
                                 onChange={handleChange}
@@ -195,7 +196,7 @@ export default ({ match, history }) => {
                         </CardContent>
                         <CardActions className={classes.actions}>
                             {id && <IconButton onClick={resetData} disabled={Loading}><Undo /></IconButton>}
-                            <Button variant="contained" type="submit" color="primary" disabled={Loading}>Salvar</Button>
+                            <Button variant="contained" type="submit" color="primary" disabled={Loading}><FormattedMessage id="btn.save" /></Button>
                         </CardActions>
                     </form>
                 </Card>

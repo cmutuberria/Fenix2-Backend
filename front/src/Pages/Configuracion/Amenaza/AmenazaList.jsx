@@ -28,6 +28,8 @@ import { Edit, Delete } from "@material-ui/icons";
 import SortableCell from "../../../Components/SortableCell";
 import TablePagination from "../../../Components/TablePagination";
 import TableTextFilter from "../../../Components/TableTextFilter";
+import { FormattedMessage, useIntl  } from "react-intl";
+
 
 export default ({ history }) => {
   const classes = useStyles();
@@ -43,6 +45,8 @@ export default ({ history }) => {
   const [row, setRow] = useState();
   const [filtro, setFiltro] = useState("");
   const [sort, setSort] = useState();
+  const intl = useIntl();
+
 
   useEffect(() => {
     if (row) {
@@ -108,7 +112,7 @@ export default ({ history }) => {
     <React.Fragment>
       <div className={classes.header}>
         <Typography variant="h5" className={classes.title}>
-          Listado de Amenazas
+          <FormattedMessage id="page.amenazas.list.title"/>          
         </Typography>
         <Button
           color="primary"
@@ -116,7 +120,7 @@ export default ({ history }) => {
           className={classes.btnMargin}
           onClick={handleAdd}
         >
-          Nueva Amenaza
+           <FormattedMessage id="page.amenazas.list.btn_new" />
         </Button>
       </div>
       <TableContainer component={Paper}>
@@ -124,7 +128,7 @@ export default ({ history }) => {
           setPage={setPage}
           filtro={filtro}
           setFiltro={setFiltro}
-          placeholder="Buscar Amenaza"
+          placeholder={intl.formatMessage({ id: 'page.amenazas.list.search' })}
         />
         <Table aria-label="simple table" size="small">
           <TableHead>
@@ -132,19 +136,19 @@ export default ({ history }) => {
               <TableCell></TableCell>
               <SortableCell
                 columnKey="nombre"
-                columnLabel="Nombre"
+                columnLabel={intl.formatMessage({ id: 'amenazas.attr.nombre' })}
                 sort={sort}
                 setSort={setSort}
               />
               <SortableCell
                 columnKey="tipo"
-                columnLabel="Tipo"
+                columnLabel={intl.formatMessage({ id: 'amenazas.attr.tipo' })}
                 sort={sort}
                 setSort={setSort}
               />
               <SortableCell
                 columnKey="activo"
-                columnLabel="Activo"
+                columnLabel={intl.formatMessage({ id: 'amenazas.attr.activo' })}
                 sort={sort}
                 setSort={setSort}
               />
@@ -154,21 +158,21 @@ export default ({ history }) => {
             {data.map((row, i) => (
               <TableRow key={i}>
                 <TableCell>
-                  <Tooltip title="Editar">
+                <Tooltip title={intl.formatMessage({ id: 'table.btn.edit' })}>
                     <IconButton
                       onClick={(e) => handleEdit(e, row)}
                       color="inherit"
-                      aria-label="Editar"
+                      aria-label={intl.formatMessage({ id: 'table.btn.edit' })}
                       size="small"
                     >
                       <Edit fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Eliminar">
+                  <Tooltip title={intl.formatMessage({ id: 'table.btn.delete' })}>
                     <IconButton
                       onClick={(e) => handleDelete(e, row)}
                       color="inherit"
-                      aria-label="Eliminar"
+                      aria-label={intl.formatMessage({ id: 'table.btn.delete' })}
                       size="small"
                     >
                       <Delete fontSize="small" />
@@ -191,9 +195,9 @@ export default ({ history }) => {
         />
       </TableContainer>
       <Dialog
-        title="Eliminar Amenaza"
+        title={intl.formatMessage({ id: 'page.amenazas.list.dialog.title' })}
         key="dialog"
-        body="¿Desea eliminar la Amenaza?"
+        body={intl.formatMessage({ id: 'page.amenazas.list.dialog.body' })}
         open={openDialog}
         handlerOk={handleOkDelete}
         handleCancel={handleCancelDelete}

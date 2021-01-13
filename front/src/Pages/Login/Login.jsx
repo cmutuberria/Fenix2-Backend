@@ -8,7 +8,7 @@ import LinearProgress from '../../Components/LinearProgress'
 import { login } from '../../Redux/Actions/auth'
 import { isAuthenticated, authError,authLoading } from '../../Redux/selectors'
 import useForm from '../../useForm';
-
+import { FormattedMessage, useIntl } from "react-intl";
 
 
 export default () => {
@@ -17,6 +17,7 @@ export default () => {
     const isAuth = useSelector(state => isAuthenticated(state));
     const AuthError = useSelector(state => authError(state));
     const AuthLoading = useSelector(state => authLoading(state));
+    const intl = useIntl();
 
     const { handleChange, handleSubmit, values, errors } = useForm(
         submit,
@@ -26,10 +27,10 @@ export default () => {
     function validateLogin(values){
         let errors = {};
         if (!values.username) {
-            errors.username = "El Usuario es requerido";
+            errors.username = intl.formatMessage({ id: "login.error.usuario" })
         }
         if (!values.password) {
-            errors.password = "La contraseña es is requerida";
+            errors.password = intl.formatMessage({ id: "login.error.password" })
         }
         return errors;
     }
@@ -45,7 +46,7 @@ export default () => {
                 <Card className={classes.card}>
                     <form onSubmit={handleSubmit} noValidate>
                         <CardContent>
-                            <Typography variant="h3" noWrap className={classes.title}>Autenticación</Typography>
+                            <Typography variant="h3" noWrap className={classes.title}><FormattedMessage id="page.login.title" /></Typography>
                                 {AuthError && <MySnackbarContentWrapper
                                     variant="error"
                                     className={classes.snack}
@@ -54,7 +55,7 @@ export default () => {
                                 {AuthLoading && <LinearProgress className={classes.snack} color="secondary"/>}
                                 <TextField
                                     className={classes.textField}
-                                    label="Usuario"
+                                    label={intl.formatMessage({ id: "login.attr.usuario" })}
                                     name="username"
                                     id="username"
                                     onChange={handleChange}
@@ -65,7 +66,7 @@ export default () => {
                                 <TextField
                                     type="password"
                                     className={classes.textField}
-                                    label="Contraseña"
+                                    label={intl.formatMessage({ id: "login.attr.password" })}
                                     id="password"
                                     name="password"
                                     onChange={handleChange}
@@ -75,7 +76,7 @@ export default () => {
                                 />
                         </CardContent>
                         <CardActions className={classes.actions}>
-                            <Button variant="contained" type="submit" color="primary">Entrar</Button>
+                            <Button variant="contained" type="submit" color="primary"><FormattedMessage id="btn.login" /></Button>
                         </CardActions>
                     </form>
                 </Card>

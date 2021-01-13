@@ -25,7 +25,6 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import Settings from "@material-ui/icons/Settings";
-import PeopleAlt from "@material-ui/icons/PeopleAlt";
 import { logout } from "../Redux/Actions/auth";
 import ListItemLink from "./ListItemLink";
 import useStyles from "../style";
@@ -33,27 +32,29 @@ import {
   ExitToApp,
   Home,
   AccountCircle,
-  Public,
-  HomeWork,
-  SupervisedUserCircle,
-  LineStyle,
-  AccountTree,
-  Dns,
-  DragHandle,
-  FilterVintage,
-  EmojiNature,
   Nature,
   Search,
-  Extension, OfflineBolt, NatureOutlined, LocalPharmacyOutlined, AccountTreeOutlined, ExtensionOutlined, OfflineBoltOutlined, SupervisedUserCircleOutlined, HomeWorkOutlined, PublicOutlined, PeopleAltOutlined
+  NatureOutlined,
+  LocalPharmacyOutlined,
+  AccountTreeOutlined,
+  ExtensionOutlined,
+  OfflineBoltOutlined,
+  SupervisedUserCircleOutlined,
+  HomeWorkOutlined,
+  PublicOutlined,
+  PeopleAltOutlined,
 } from "@material-ui/icons";
 import { userAuthenticated } from "../Redux/selectors";
 import { hasPermition } from "../Auth/auth";
-import Language from './language';
+import Language from "./language";
+import { FormattedMessage,useIntl } from "react-intl";
+
 export default ({ history }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const theme = useTheme();
   const userAuth = useSelector((state) => userAuthenticated(state));
+  const intl = useIntl();
 
   const [open, setOpen] = useState(false);
   const [openModulo, setOpenModulo] = useState("Configuracion");
@@ -89,7 +90,7 @@ export default ({ history }) => {
       <ListItemLink
         to={`/Configuracion/Trabajador/Detalle/${userAuth._id}`}
         component="li"
-        primary="Mis datos"
+        primary={intl.formatMessage({ id: 'nav.misdatos' })}
       />
     </Menu>
   );
@@ -139,7 +140,9 @@ export default ({ history }) => {
           Fenix
         </Typography>
         <Typography variant="h6" className={classes.title}>
-          Registro de Colecciones Botánicas
+          <FormattedMessage
+            id="nav.title"
+          />
         </Typography>
         <Language />
         <Button
@@ -161,7 +164,9 @@ export default ({ history }) => {
           onClick={handlerLogout}
           startIcon={<ExitToApp />}
         >
-          Cerrar Sessión
+          <FormattedMessage
+            id="nav.logout"
+          />
         </Button>
       </Toolbar>
       {renderMenu}
@@ -194,7 +199,11 @@ export default ({ history }) => {
       <Divider />
 
       <List>
-        <ListItemLink to="/" primary="Inicio" icon={<Home />} />
+        <ListItemLink
+          to="/"
+          primary={intl.formatMessage({ id: 'nav.menu.inicio' })}
+          icon={<Home />}
+        />
         {hasPermition(
           ["Administrador", "Administrador_General"],
           userAuth.roles
@@ -207,7 +216,7 @@ export default ({ history }) => {
             <ListItemIcon>
               <Settings />
             </ListItemIcon>
-            <ListItemText primary="Configuración" />
+            <ListItemText primary={intl.formatMessage({ id: 'nav.menu.configuracion' })} />
             {openModulo == modulesKey.CONFIGURACION && isOpenModulo ? (
               <ExpandLess />
             ) : (
@@ -223,31 +232,31 @@ export default ({ history }) => {
             <List component="div" disablePadding>
               <ListItemLink
                 to="/Configuracion/Trabajadores"
-                primary="Trabajadores"
+                primary={intl.formatMessage({ id: 'nav.menu.trabajadores' })}
                 icon={<PeopleAltOutlined />}
                 classes={classes.nested}
               />
               <ListItemLink
                 to="/Configuracion/Paises"
-                primary="Paises"
+                primary={intl.formatMessage({ id: 'nav.menu.paises' })}
                 icon={<PublicOutlined />}
                 classes={classes.nested}
               />
               <ListItemLink
-                to="/Configuracion/Jardines"
-                primary="Jardines"
+                to="/Configuracion/Instituciones"
+                primary={intl.formatMessage({ id: 'nav.menu.jardines' })}
                 icon={<HomeWorkOutlined />}
                 classes={classes.nested}
               />
               <ListItemLink
                 to="/Configuracion/Colectores"
-                primary="Colectores/Introductores"
+                primary={intl.formatMessage({ id: 'nav.menu.colectores' })}
                 icon={<SupervisedUserCircleOutlined />}
                 classes={classes.nested}
               />
               <ListItemLink
                 to="/Configuracion/Amenazas"
-                primary="Amenazas"
+                primary={intl.formatMessage({ id: 'nav.menu.amenazas' })}
                 icon={<OfflineBoltOutlined />}
                 classes={classes.nested}
               />
@@ -255,7 +264,7 @@ export default ({ history }) => {
           </Collapse>,
         ]}
         {hasPermition(
-          ["Taxonomico_General", "Administrador_General"],
+          ["Taxonomo_General", "Administrador_General"],
           userAuth.roles
         ) && [
           <ListItem
@@ -266,7 +275,7 @@ export default ({ history }) => {
             <ListItemIcon>
               <Nature />
             </ListItemIcon>
-            <ListItemText primary="Taxonomía" />
+            <ListItemText primary={intl.formatMessage({ id: 'nav.menu.taxonomia' })}/>
             {openModulo == modulesKey.TAXONOMIA && isOpenModulo ? (
               <ExpandLess />
             ) : (
@@ -282,32 +291,32 @@ export default ({ history }) => {
             <List component="div" disablePadding>
               <ListItemLink
                 to="/Taxonomia/TipoEstructura"
-                primary="Tipo Estructura"
+                primary={intl.formatMessage({ id: 'nav.menu.tipoestructura' })}
                 icon={<ExtensionOutlined />}
                 classes={classes.nested}
               />
               <ListItemLink
                 to="/Taxonomia/Estructura"
-                primary="Estructura"
+                primary={intl.formatMessage({ id: 'nav.menu.estructura' })}
                 icon={<AccountTreeOutlined />}
                 classes={classes.nested}
               />
               <ListItemLink
                 to="/Taxonomia/Filtro"
-                primary="Filtro"
+                primary={intl.formatMessage({ id: 'nav.menu.filtro' })}
                 icon={<Search />}
                 classes={classes.nested}
               />
               <ListItemLink
                 to="/Taxonomia/Especies"
-                primary="Taxones"
+                primary={intl.formatMessage({ id: 'nav.menu.taxones' })}
                 icon={<NatureOutlined />}
                 classes={classes.nested}
               />
 
               <ListItemLink
                 to="/Taxonomia/Usos"
-                primary="Usos"
+                primary={intl.formatMessage({ id: 'nav.menu.usos' })}
                 icon={<LocalPharmacyOutlined />}
                 classes={classes.nested}
               />

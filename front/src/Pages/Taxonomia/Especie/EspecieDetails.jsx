@@ -20,7 +20,6 @@ import {
   CardActionArea,
 } from "@material-ui/core";
 import useStyles from "../../../style";
-import listStyle from "./style";
 import { useSnackbar } from "notistack";
 import {
   LOADING_START,
@@ -30,13 +29,8 @@ import {
 import { apiCall } from "../../../Redux/Api";
 import {
   Visibility,
-  StarBorder,
   Edit,
-  Delete,
-  GetApp,
-  GetAppOutlined,
-  EditOutlined,
-  DeleteOutlined,
+  GetApp
 } from "@material-ui/icons";
 import { loading } from "../../../Redux/selectors";
 import CategoriaUICN from "../../../Constant/CategoriaUICN";
@@ -47,16 +41,16 @@ import Habitat from "./_habitat";
 import Childrens from "./_childrens";
 import Usos from "./_usos";
 import TabPanel from "../../../Components/TabPanel";
-import { Link } from "react-router-dom";
 import DialogImg from "../../../Components/DialogImg";
 import showClasificadores from "../../../Utils/showClasificadores";
 import Amenazas from "./_amenazas";
 import Galeria from "./_galeria";
 import Referencias from './_referencias';
+import { FormattedMessage, useIntl } from "react-intl";
+
 
 export default ({ history, match }) => {
   const classes = useStyles();
-  const classesList = listStyle();
   const dispatch = useDispatch();
   const id = match.params.id;
   const [obj, setObj] = useState();
@@ -67,6 +61,8 @@ export default ({ history, match }) => {
   const [value, setValue] = useState(0);
   const [open, setOpen] = useState(false);
   const [imgPath, setImgPath] = useState("false");
+  const intl = useIntl();
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -186,7 +182,7 @@ export default ({ history, match }) => {
     <React.Fragment>
       <div className={classes.header}>
         <Typography variant="h5" className={classes.title}>
-          {`Detalle de ${obj?obj.tipo.label:""}`}
+          <FormattedMessage id="page.especies.detalle.title"values={{obj:obj?obj.tipo.label:""}} />
         </Typography>
       </div>
 
@@ -200,13 +196,13 @@ export default ({ history, match }) => {
             textColor="primary"
             variant="fullWidth"
           >
-            <Tab label="Información General" {...a11yProps(0)} />
-            <Tab label="Nomenclatura" {...a11yProps(1)} />
-            <Tab label="Fenología" {...a11yProps(2)} />
-            <Tab label="Hábitat" {...a11yProps(3)} />
-            <Tab label="Amenazas" {...a11yProps(4)} />
-            <Tab label="Galería" {...a11yProps(5)} />
-            <Tab label="Referencias" {...a11yProps(6)} />
+            <Tab label={intl.formatMessage({ id: "page.especies.detalle.tab.informacion_general" })} {...a11yProps(0)} />
+            <Tab label={intl.formatMessage({ id: "page.especies.detalle.tab.nomenclatura" })} {...a11yProps(1)} />
+            <Tab label={intl.formatMessage({ id: "page.especies.detalle.tab.fenologia" })} {...a11yProps(2)} />
+            <Tab label={intl.formatMessage({ id: "page.especies.detalle.tab.habitat" })} {...a11yProps(3)} />
+            <Tab label={intl.formatMessage({ id: "page.especies.detalle.tab.amenazas" })} {...a11yProps(4)} />
+            <Tab label={intl.formatMessage({ id: "page.especies.detalle.tab.galeria" })} {...a11yProps(5)} />
+            <Tab label={intl.formatMessage({ id: "page.especies.detalle.tab.referencias" })} {...a11yProps(6)} />
           </Tabs>
         </AppBar>
 
@@ -221,15 +217,15 @@ export default ({ history, match }) => {
                         <CardActionArea>
                           <CardMedia
                             component="img"
-                            alt="Imagen Representativa"
+                            alt={intl.formatMessage({ id: "page.especies.detalle.imagen_representativa" })}
                             height="300"
                             image={`${process.env.REACT_APP_BASE_URL}/utils/img?path=${obj.img_individuo}`}
-                            title="Imagen Representativa"
+                            title={intl.formatMessage({ id: "page.especies.detalle.imagen_representativa" })}
                             onClick={handlerImgFullWith}
                           />
                           <div className={classes.iconsBetween}>
                             <IconButton
-                              aria-label="settings"
+                              aria-label={intl.formatMessage({ id: "btn.edit" })}
                               onClick={() =>
                                 history.push(
                                   `/Taxonomia/Especie/ImgRepresentativa/${obj._id}`
@@ -239,7 +235,7 @@ export default ({ history, match }) => {
                               <Edit />
                             </IconButton>
                             <IconButton
-                              aria-label="settings"
+                              aria-label={intl.formatMessage({ id: "btn.download" })}
                               onClick={() => download(obj.img_individuo)}
                             >
                               <GetApp />
@@ -258,7 +254,7 @@ export default ({ history, match }) => {
                               )
                             }
                           >
-                            Adicionar Imagen Representativa
+                          <FormattedMessage id="page.especies.detalle.imagen_representativa"/>
                           </Button>
                         </CardActions>
                       )}
@@ -270,15 +266,15 @@ export default ({ history, match }) => {
                         <CardActionArea>
                           <CardMedia
                             component="img"
-                            alt="Imagen Representativa"
+                            alt={intl.formatMessage({ id: "page.especies.detalle.muestra_representativa" })}
                             height="300"
                             image={`${process.env.REACT_APP_BASE_URL}/utils/img?path=${obj.img_herbario}`}
-                            title="Imagen Representativa"
+                            title={intl.formatMessage({ id: "page.especies.detalle.muestra_representativa" })}
                             onClick={handlerImgFullWith}
                           />
                           <div className={classes.iconsBetween}>
                             <IconButton
-                              aria-label="settings"
+                              aria-label={intl.formatMessage({ id: "btn.edit" })}
                               onClick={() =>
                                 history.push(
                                   `/Taxonomia/Especie/MuestraHerbario/${obj._id}`
@@ -289,7 +285,7 @@ export default ({ history, match }) => {
                             </IconButton>
                             {/* <a href={`${process.env.REACT_APP_BASE_URL}/utils/img?path=${obj.img_herbario}`} download> */}
                             <IconButton
-                              aria-label="settings"
+                              aria-label={intl.formatMessage({ id: "btn.download" })}
                               onClick={() => download(obj.img_herbario)}
                             >
                               <GetApp />
@@ -309,7 +305,7 @@ export default ({ history, match }) => {
                               )
                             }
                           >
-                            Adicionar Muestra de Herbario
+                          <FormattedMessage id="page.especies.detalle.muestra_representativa"/>
                           </Button>
                         </CardActions>
                       )}
@@ -340,7 +336,7 @@ export default ({ history, match }) => {
                                       (elem) => elem._id == obj.categoria_UICN
                                     ).label
                                   }
-                                  secondary="Categoría Amenaza UICN"
+                                  secondary={intl.formatMessage({ id: "especies.label.categoria_UICN" })}
                                 ></ListItemText>
                               </ListItem>
 
@@ -349,19 +345,19 @@ export default ({ history, match }) => {
                                   primary={showClasificadores(
                                     obj.clasificadores
                                   )}
-                                  secondary="Clasificador(es)"
+                                  secondary={intl.formatMessage({ id: "especies.attr.clasificador" })}
                                 ></ListItemText>
                               </ListItem>
                               <ListItem key="anno_clasificacion">
                                 <ListItemText
                                   primary={obj.anno_clasificacion}
-                                  secondary="Año Clasificación"
+                                  secondary={intl.formatMessage({ id: "especies.attr.anno_clasificacion" })}
                                 ></ListItemText>
                               </ListItem>
                               <ListItem key="origen">
                                 <ListItemText
                                   primary={obj.origen}
-                                  secondary="Origen"
+                                  secondary={intl.formatMessage({ id: "especies.attr.origen" })}
                                 ></ListItemText>
                               </ListItem>
                             </List>
@@ -369,7 +365,7 @@ export default ({ history, match }) => {
                           <Grid item lg={6}>
                             <div className={classes.detailHeader}>
                               <Typography variant="h6">
-                                Clasificación
+                              <FormattedMessage id="page.especies.detalle.clasificacion"/>
                               </Typography>
                             </div>
                             <Paper variant="outlined">{renderParents()}</Paper>
@@ -388,7 +384,7 @@ export default ({ history, match }) => {
                               )
                             }
                           >
-                            Editar
+                            <FormattedMessage id="btn.edit"/>
                           </Button>
                           <Button
                             variant="contained"
@@ -396,7 +392,7 @@ export default ({ history, match }) => {
                             disabled={Loading}
                             onClick={(e) => handleDelete(obj)}
                           >
-                            Eliminar
+                            <FormattedMessage id="btn.delete"/>
                           </Button>
                         </CardActions>
                       )}

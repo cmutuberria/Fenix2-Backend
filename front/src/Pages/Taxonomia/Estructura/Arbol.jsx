@@ -1,31 +1,17 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import TreeView from "@material-ui/lab/TreeView";
-import TreeItem from "@material-ui/lab/TreeItem";
 import Typography from "@material-ui/core/Typography";
-import useStyles from "./style";
 import { Button, Grid, Toolbar, Card, CardContent, AppBar, Tabs, Tab, Box } from "@material-ui/core";
-import {
-  Visibility,
-  SupervisorAccount,
-  ExpandMore,
-  ChevronRight,
-  Edit,
-  Delete,
-  AccountTree,
-  ViewList,
-} from "@material-ui/icons";
 import { apiCall } from "../../../Redux/Api";
 import { useDispatch, useSelector } from "react-redux";
 import {
   LOADING_START,
   LOADING_END,
-  SERVER_ERROR,
 } from "../../../Redux/actionTypes";
 import { loading } from "../../../Redux/selectors";
 import useStyles1 from "../../../style";
 import _arbol from "./_arbol";
-
+import { FormattedMessage, useIntl  } from "react-intl";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -97,7 +83,7 @@ export default ({ history }) => {
     <>
       <Toolbar>
         <Typography variant="h5" className={classes.title}>
-          Árbol Taxonómico
+          <FormattedMessage id="page.estructura.list.title"/> 
         </Typography>
         {
           <Grid className={classes.btnGroup1}>
@@ -107,7 +93,7 @@ export default ({ history }) => {
               color={"primary"}
               onClick={handleAddEstructura}
             >
-              Adicionar Clasificación
+              <FormattedMessage id="page.estructura.list.btn_new_clasificacion" />
             </Button>
             <Button
               variant="contained"
@@ -115,7 +101,7 @@ export default ({ history }) => {
               color="primary"
               onClick={handleAddTaxon}
             >
-              Adicionar Taxón
+              <FormattedMessage id="page.estructura.list.btn_new_taxon" />
             </Button>
           </Grid>
         }

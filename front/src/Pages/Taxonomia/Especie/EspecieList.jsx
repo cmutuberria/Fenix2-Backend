@@ -15,6 +15,7 @@ import TablePagination from '../../../Components/TablePagination';
 import TableTextFilter from "../../../Components/TableTextFilter";
 import CategoriaUICN from '../../../Constant/CategoriaUICN';
 import  showClasificadores from "../../../Utils/showClasificadores";
+import { FormattedMessage, useIntl } from "react-intl";
 
 
 export default ({ history }) => {
@@ -30,6 +31,8 @@ export default ({ history }) => {
     const [row, setRow] = useState();
     const [filtro, setFiltro] = useState("");
     const [sort, setSort] = useState();
+    const intl = useIntl();
+
 
     useEffect(() => {
         if (row) {
@@ -105,30 +108,30 @@ export default ({ history }) => {
     return (
         <React.Fragment>
             <div className={classes.header}>
-                <Typography variant="h5" className={classes.title}>Listado de Taxones</Typography>
+                <Typography variant="h5" className={classes.title}><FormattedMessage id="page.especies.list.title" /></Typography>
                 <Button color="primary" variant="contained"
                     className={classes.btnMargin}
-                    onClick={handleAdd}>Nuevo Taxón</Button>
+                    onClick={handleAdd}><FormattedMessage id="page.especies.list.btn_new" /></Button>
             </div>
             <TableContainer component={Paper}>
                 <TableTextFilter setPage={setPage} filtro={filtro} 
-                setFiltro={setFiltro} placeholder="Buscar Taxón" />
+                setFiltro={setFiltro} placeholder={intl.formatMessage({ id: 'page.especies.list.search' })}/>
                 <Table aria-label="simple table" size="small">
                     <TableHead>
                         <TableRow>
                             <TableCell></TableCell>
                             <TableCell></TableCell>
-                            <SortableCell columnKey="nombre" columnLabel="Nombre"
+                            <SortableCell columnKey="nombre" columnLabel={intl.formatMessage({ id: 'especies.attr.nombre' })}
                                 sort={sort}
                                 setSort={setSort} />
-                            <SortableCell columnKey="categoria_UICN" columnLabel="UICN"
+                            <SortableCell columnKey="categoria_UICN" columnLabel={intl.formatMessage({ id: 'especies.attr.categoria_UICN' })}
                                 sort={sort}
                                 setSort={setSort} />
-                            <TableCell>Clasificador(es)</TableCell>
-                            <SortableCell columnKey="anno_clasificacion" columnLabel="Clasificado en:"
+                            <TableCell><FormattedMessage id="especies.attr.clasificador" /></TableCell>
+                            <SortableCell columnKey="anno_clasificacion" columnLabel={intl.formatMessage({ id: 'especies.label.anno_clasificacion' })}
                                 sort={sort}
                                 setSort={setSort} />
-                            <SortableCell columnKey="origen" columnLabel="Origen"
+                            <SortableCell columnKey="origen" columnLabel={intl.formatMessage({ id: 'especies.attr.origen' })}
                                 sort={sort}
                                 setSort={setSort} />
                         </TableRow>
@@ -137,29 +140,29 @@ export default ({ history }) => {
                         {data.map((row, i) => (
                             <TableRow key={i}>
                                 <TableCell>
-                                    <Tooltip title="Detalle">
+                                    <Tooltip title={intl.formatMessage({ id: 'table.btn.detail' })}>
                                         <IconButton
                                             onClick={(e) => handleView(e, row)}
                                             color="inherit"
-                                            aria-label="Editar"
+                                            aria-label={intl.formatMessage({ id: 'table.btn.detail' })}
                                             size="small">
                                             <Visibility fontSize="small" />
                                         </IconButton>
                                     </Tooltip>
-                                    <Tooltip title="Editar">
+                                    <Tooltip title={intl.formatMessage({ id: 'table.btn.edit' })}>
                                         <IconButton
                                             onClick={(e) => handleEdit(e, row)}
                                             color="inherit"
-                                            aria-label="Editar"
+                                            aria-label={intl.formatMessage({ id: 'table.btn.edit' })}
                                             size="small">
                                             <Edit fontSize="small" />
                                         </IconButton>
                                     </Tooltip>
-                                    <Tooltip title="Eliminar">
+                                    <Tooltip title={intl.formatMessage({ id: 'table.btn.delete' })}>
                                         <IconButton
                                             onClick={(e) => handleDelete(e, row)}
                                             color="inherit"
-                                            aria-label="Eliminar"
+                                            aria-label={intl.formatMessage({ id: 'table.btn.delete' })}
                                             size="small">
                                             <Delete fontSize="small" />
                                         </IconButton>
@@ -180,8 +183,9 @@ export default ({ history }) => {
                 </Table>
                 <TablePagination row={row} setRow={setRow} page={page} setPage={setPage} total={total} />
             </TableContainer>
-            <Dialog title="Eliminar Especie" key="dialog"
-                body="¿Desea eliminar el Taxón?"
+            <Dialog title={intl.formatMessage({ id: 'page.especies.list.dialog.title' })}
+                key="dialog"
+                body={intl.formatMessage({ id: 'page.especies.list.dialog.body' })}
                 open={openDialog}
                 handlerOk={handleOkDelete}
                 handleCancel={handleCancelDelete} />

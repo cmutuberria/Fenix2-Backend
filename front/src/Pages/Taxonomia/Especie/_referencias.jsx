@@ -13,8 +13,7 @@ import { LOADING_START, LOADING_END, SERVER_ERROR } from "../../../Redux/actionT
 import { apiCall } from "../../../Redux/Api";
 import { Edit, Delete, ExpandMore, ExpandLess } from '@material-ui/icons';
 import { loading } from "../../../Redux/selectors";
-
-
+import { FormattedMessage, useIntl } from "react-intl";
 
 export default ({ obj }) => {
     const classes = useStyles();
@@ -25,8 +24,7 @@ export default ({ obj }) => {
     const { enqueueSnackbar } = useSnackbar();
     const [serverErrors, setServerErrors] = useState()
     const [showForm, setShowForm] = useState(false);
-
-
+    const intl = useIntl();
 
     const [values, setValues] = useState({});
     const [errors, setErrors] = useState({});
@@ -41,7 +39,7 @@ export default ({ obj }) => {
     function validateForm() {
         let errors1 = {};
         if (!values.referencia) {
-            errors1.referencia = "El nombre es requerido";
+            errors1.referencia = intl.formatMessage({ id: "especies.error.referencia" })
         }
         setErrors(errors1);
         return errors1;
@@ -115,7 +113,7 @@ export default ({ obj }) => {
             {elements.map((item, i) => <ListItem key={i}>
                 <ListItemText primary={item} />
                 <ListItemSecondaryAction >
-                    <IconButton aria-label="Editar" edge="end"
+                    <IconButton aria-label={intl.formatMessage({ id: "btn.edit" })} edge="end"
                         onClick={(e) => {
                             setSelectedChild(item)
                             setValues({ ...values, referencia: item })
@@ -123,7 +121,7 @@ export default ({ obj }) => {
                         }}>
                         <Edit fontSize="small" />
                     </IconButton>
-                    <IconButton aria-label="Eliminar" edge="end"
+                    <IconButton aria-label={intl.formatMessage({ id: "btn.delete" })} edge="end"
                         onClick={(e) => {
                             handlerDelete(item)
                         }}>
@@ -136,20 +134,20 @@ export default ({ obj }) => {
     return (
         <React.Fragment>
             <div className={classes.detailHeader}>
-                <Typography variant="h6">Referencias</Typography>
+                <Typography variant="h6"><FormattedMessage id="page.especies.detalle.referencias" /></Typography>
                 {!showForm && <Button endIcon={<ExpandMore />}
                     size="small"
                     onClick={()=>setShowForm(!showForm)}>
-                    Mostrar Formulario</Button>}
+                   <FormattedMessage id="btn.show" /></Button>}
                 {showForm && <Button endIcon={<ExpandLess />}
                     size="small"
                     onClick={()=>setShowForm(!showForm)}>
-                    Ocultar Formulario</Button>}
+                    <FormattedMessage id="btn.hide" /></Button>}
             </div>
             {showForm&&<Grid>
                 <form onSubmit={handleSubmit} noValidate className={classes.formInline}>
                     <TextField
-                        label="Referencia*"
+                        label={intl.formatMessage({ id: "especies.attr.referencia" })+"*"}
                         name="referencia"
                         id="referencia"
                         onChange={handleChange}
@@ -159,7 +157,7 @@ export default ({ obj }) => {
                         helperText={errors.referencia}
                     />
                     <Button variant="contained" type="submit"
-                        color="primary" size="small" disabled={Loading}>Salvar</Button>
+                        color="primary" size="small" disabled={Loading}><FormattedMessage id="btn.save" /></Button>
 
                 </form>
             </Grid>}

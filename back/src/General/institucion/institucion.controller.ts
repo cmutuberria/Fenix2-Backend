@@ -46,7 +46,7 @@ export class InstitucionController {
             throw new NotFoundException('Institución no encontrada');
         }
         return res.status(HttpStatus.OK).json({
-            message: "Institución eliminadacorrectamente",
+            message: "Institución eliminada correctamente",
             obj
         })
     }

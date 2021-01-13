@@ -15,7 +15,7 @@ export default ({ imgPath, open, onClose }) => {
       aria-labelledby="responsive-dialog-title"
     >
       <DialogContent className={classes.dialogImg}>          
-          <img src={imgPath} />
+          <img src={imgPath} alt="img" />
       </DialogContent>
     </Dialog>
   );

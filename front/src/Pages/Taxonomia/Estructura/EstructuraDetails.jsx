@@ -13,9 +13,6 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
-  Tabs,
-  AppBar,
-  Tab,
 } from "@material-ui/core";
 import useStyles from "../../../style";
 import { useSnackbar } from "notistack";
@@ -26,15 +23,12 @@ import {
 } from "../../../Redux/actionTypes";
 import { apiCall } from "../../../Redux/Api";
 import {
-  Edit,
-  Delete,
-  AddBox,
-  KeyboardArrowUp,
   Visibility,
 } from "@material-ui/icons";
 import { loading } from "../../../Redux/selectors";
 import HijoForm from "./HijoForm";
 import Childrens from "./_childrens";
+import { FormattedMessage, useIntl  } from "react-intl";
 
 export default ({ history, match }) => {
   const classes = useStyles();
@@ -46,6 +40,7 @@ export default ({ history, match }) => {
   const Loading = useSelector((state) => loading(state));
   const { enqueueSnackbar } = useSnackbar();
   const [value, setValue] = React.useState(0);
+  const intl = useIntl();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -114,7 +109,7 @@ export default ({ history, match }) => {
             <ListItemText primary={obj.nombre} secondary={obj.tipo.label} />
             <ListItemSecondaryAction>
               <IconButton
-                aria-label="Detalle"
+                aria-label={intl.formatMessage({ id: 'table.btn.detail' })}
                 edge="end"
                 onClick={(e) => handleView(obj)}
               >
@@ -139,7 +134,7 @@ export default ({ history, match }) => {
     <React.Fragment>
       <div className={classes.header}>
         <Typography variant="h5" className={classes.title}>
-          {`Detalle de ${obj?obj.tipo.label:""}`}
+        <FormattedMessage id="page.estructura.detalle.title" values={{obj:obj?obj.tipo.label:""}}/>          
         </Typography>
       </div>
       <Card className={classes.card}>
@@ -164,7 +159,7 @@ export default ({ history, match }) => {
               <Grid item xs={6}>
                 <div className={classes.detailHeader}>
                   <Typography variant="h6" className={classes.padd1}>
-                    Clasificación
+                    <FormattedMessage id="page.estructura.detalle.clasificacion" />          
                   </Typography>
                 </div>
                 <Paper variant="outlined">{renderParents()}</Paper>
@@ -189,7 +184,7 @@ export default ({ history, match }) => {
                 history.push(`/Taxonomia/Estructura/Formulario/${obj._id}`)
               }
             >
-              Editar
+            <FormattedMessage id="btn.edit" />          
             </Button>
             <Button
               variant="contained"
@@ -197,7 +192,7 @@ export default ({ history, match }) => {
               disabled={Loading}
               onClick={(e) => handleDelete(obj, false)}
             >
-              Eliminar
+            <FormattedMessage id="btn.delete" />          
             </Button>
           </CardActions>
         )}

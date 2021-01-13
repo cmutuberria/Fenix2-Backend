@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
   IconButton,
-  Grid, Dialog, DialogContent, DialogTitle
+  Grid,
 } from "@material-ui/core";
 import Undo from "@material-ui/icons/Undo";
 import useStyles from "../../../style";
@@ -25,6 +25,8 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import CategoriaUICN from "../../../Constant/CategoriaUICN";
 import { AddToPhotos } from "@material-ui/icons";
 import DialogClasificador from './_dialogClasificadorForm';
+import { FormattedMessage, useIntl } from "react-intl";
+
 var fs = require("fs");
 
 export default ({ match, history }) => {
@@ -41,6 +43,8 @@ export default ({ match, history }) => {
   const Loading = useSelector((state) => loading(state));
   const [openDialog, setOpenDialog] = useState(false);
   const [nuevoClasificador, setNuevoClasificador] = useState();
+  const intl = useIntl();
+
 
   let { handleChange, handleSubmit, values, errors, handleSelect } = useForm(
     submit,
@@ -138,14 +142,17 @@ export default ({ match, history }) => {
 
   function validateForm(values) {
     let errors = {};
+    if (!values.tipo) {
+      errors.tipo = intl.formatMessage({ id: 'especies.error.tipo' })
+    }
     if (!values.padre) {
-      errors.padre = "El padre es requerido";
+      errors.padre = intl.formatMessage({ id: 'especies.error.padre' })
     }
     if (!values.nombre) {
-      errors.nombre = "El nombre es requerido";
+      errors.nombre = intl.formatMessage({ id: 'especies.error.nombre' })
     }
-    if (values.tipo.vista_ampliada&&!values.categoria_UICN) {
-      errors.categoria_UICN = "La categoría de amenaza UICN es requerida";
+    if (values.tipo&&values.tipo.vista_ampliada&&!values.categoria_UICN) {
+      errors.categoria_UICN = intl.formatMessage({ id: 'especies.error.categoria_UICN' })
     }
     return errors;
   }
@@ -197,7 +204,7 @@ export default ({ match, history }) => {
     <div className={classes.rootForm}>
       <div>
         <Typography variant="h3" className={classes.header}>
-          Formulario de Taxón
+        <FormattedMessage id="page.especies.form.title" />
         </Typography>
         <Card>
           <form onSubmit={handleSubmit} noValidate>
@@ -208,6 +215,7 @@ export default ({ match, history }) => {
                                 autoComplete
                                 options={tipos}
                                 getOptionLabel={option => option.label}
+                                getOptionSelected={(option) => option._id}
                                 id="tipo"
                                 name="tipo"
                                 value={values.tipo || null}
@@ -215,7 +223,7 @@ export default ({ match, history }) => {
                                     handleSelect("tipo", newValue)
                                 }}
                                 renderInput={params => (
-                                    <TextField {...params} label="Tipo*"
+                                    <TextField {...params} label={intl.formatMessage({ id: 'especies.attr.tipo' })+"*"}
                                         className={classes.textField}
                                         error={errors.tipo ? true : false}
                                         helperText={errors.tipo} />
@@ -228,6 +236,7 @@ export default ({ match, history }) => {
                       getOptionLabel={(option) =>
                         option.nombre + " - " + option.tipo.label
                       }
+                      getOptionSelected={(option) => option._id}
                       id="padre"
                       name="padre"
                       value={values.padre || null}
@@ -237,7 +246,7 @@ export default ({ match, history }) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Padre*"
+                          label={intl.formatMessage({ id: 'especies.attr.padre' })+"*"}
                           className={classes.textField}
                           error={errors.padre ? true : false}
                           helperText={errors.padre}
@@ -247,7 +256,7 @@ export default ({ match, history }) => {
                   )}
                   <TextField
                     className={classes.textField}
-                    label={values.tipo&&values.tipo.vista_ampliada?"Nombre Científico*":"Nombre*"}
+                    label={values.tipo&&values.tipo.vista_ampliada?intl.formatMessage({ id: 'especies.label.nombre_cientifico' })+"*":intl.formatMessage({ id: 'especies.attr.nombre' })+"*"}
                     name="nombre"
                     id="nombre"
                     onChange={handleChange}
@@ -260,6 +269,7 @@ export default ({ match, history }) => {
                       autoComplete
                       options={categorias}
                       getOptionLabel={(option) => option.label}
+                      getOptionSelected={(option) => option._id}
                       id="categoria_UICN"
                       name="categoria_UICN"
                       value={values.categoria_UICN || null}
@@ -269,7 +279,7 @@ export default ({ match, history }) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Categoría Amenaza UICN*"
+                          label={intl.formatMessage({ id: 'especies.attr.categoria_UICN' })+"*"}
                           className={classes.textField}
                           error={errors.categoria_UICN ? true : false}
                           helperText={errors.categoria_UICN}
@@ -288,6 +298,7 @@ export default ({ match, history }) => {
                         className={classes.autocompleteInline}
                         options={clasificadores}
                         getOptionLabel={(option) => option.acronimo}
+                        getOptionSelected={(option) => option._id}
                         value={values.clasificadores || []}
                         onChange={(event, newValue) => {
                           handleSelect("clasificadores", newValue);
@@ -295,14 +306,14 @@ export default ({ match, history }) => {
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            label="Clasificador(es)"
+                            label={intl.formatMessage({ id: 'especies.attr.clasificador' })}
                             className={classes.textField}
                             error={errors.clasificadores ? true : false}
                             helperText={errors.clasificadores}
                           />
                         )}
                       />
-                    )}{" "}
+                    )}
                     <AddToPhotos
                       onClick={() => {
                         setOpenDialog(true);
@@ -313,7 +324,7 @@ export default ({ match, history }) => {
                   <TextField
                     type="numeric"
                     className={classes.textField}
-                    label="Año Clasificación"
+                    label={intl.formatMessage({ id: 'especies.attr.anno_clasificacion' })}
                     name="anno_clasificacion"
                     id="anno_clasificacion"
                     onChange={handleChange}
@@ -323,7 +334,7 @@ export default ({ match, history }) => {
                   />
                   <TextField
                     className={classes.textField}
-                    label="Origen"
+                    label={intl.formatMessage({ id: 'especies.attr.origen' })}
                     name="origen"
                     id="origen"
                     onChange={handleChange}
@@ -341,23 +352,23 @@ export default ({ match, history }) => {
                     <Undo />
                   </IconButton>
                 )}
-                <Button
-                  variant="contained"
-                  type="submit"
-                  color="primary"
-                  disabled={Loading}
-                >
-                  Salvar
-                </Button>
-              </div>
               <Button
                 variant="contained"
                 color="primary"
                 disabled={Loading}
                 onClick={() => history.goBack()}
               >
-                Volver
+                <FormattedMessage id="btn.back" />
               </Button>
+              </div>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  color="primary"
+                  disabled={Loading}
+                >
+                  <FormattedMessage id="btn.save" />
+                </Button>
             </CardActions>
           </form>
         </Card>

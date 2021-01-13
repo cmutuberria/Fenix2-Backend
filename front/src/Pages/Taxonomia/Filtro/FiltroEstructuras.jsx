@@ -3,11 +3,9 @@ import { useDispatch } from "react-redux";
 import {
   LOADING_START,
   LOADING_END,
-  SERVER_ERROR,
 } from "../../../Redux/actionTypes";
 import { apiCall } from "../../../Redux/Api";
 import {
-  Paper,
   Typography,
   TablePagination,
   Card,
@@ -16,13 +14,13 @@ import {
   FormControl,
   Input,
   InputAdornment,
-  IconButton,
   Button,
   FormHelperText,
 } from "@material-ui/core";
 import useStyles from "../../../style";
-import { Clear, Search } from "@material-ui/icons";
+import { Search } from "@material-ui/icons";
 import List from "./_list";
+import { FormattedMessage, useIntl  } from "react-intl";
 
 export default ({ history }) => {
   const dispatch = useDispatch();
@@ -32,6 +30,7 @@ export default ({ history }) => {
   const [page, setPage] = useState(0);
   const [filtro, setFiltro] = useState();
   const classes = useStyles();
+  const intl = useIntl();
 
   const handleChange = (e) => {
     setFiltro(e.target.value);
@@ -92,7 +91,7 @@ export default ({ history }) => {
     <>
       <div className={classes.header} key="header">
         <Typography variant="h5" className={classes.title}>
-          Búsqueda de Taxón o Clasificación
+          <FormattedMessage id="page.filtroestructuras.list.title"/>          
         </Typography>
       </div>
       <Card>
@@ -102,7 +101,7 @@ export default ({ history }) => {
               <FormControl >
                 <Input
                   value={filtro || ""}
-                  placeholder="Buscar Clasificación o Taxón"
+                  placeholder={intl.formatMessage({ id: 'page.filtroestructuras.list.search' })}
                   size="large"
                   onChange={handleChange}
                   onKeyPress={handleKey}
@@ -125,14 +124,12 @@ export default ({ history }) => {
                   // }
                 />
                 <FormHelperText>
-                  La búsqueda se realiza para Clasificaciones y Taxones, en el
-                  caso los Taxones incluye Nombre Científico, Sinonímias y
-                  Nombres Comunes.{" "}
+                  <FormattedMessage id="page.filtroestructuras.list.info"/>
                 </FormHelperText>
               </FormControl>              
             }
             <Button variant="contained" type="submit"
-                        color="primary" size="small" onClick={handleSearch}>Buscar</Button>
+                        color="primary" size="small" onClick={handleSearch}><FormattedMessage id="buscar"/></Button>
           </Toolbar>
           <div key="badge">
             {/*  <Badge color="primary" badgeContent={data.length} >
@@ -152,7 +149,7 @@ export default ({ history }) => {
           {data && <List objList={data} handleView={handleView} />}
           {total == 0 && (
             <Typography variant="body1" className={classes.title}>
-              Sin datos para mostrar.
+              <FormattedMessage id="no_data"/>              
             </Typography>
           )}
         </CardContent>

@@ -1,26 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-    Card, CardContent, CardActions, Button,
-    TextField, Typography, IconButton
-} from "@material-ui/core";
-import Undo from '@material-ui/icons/Undo'
-import useStyles from "../../../style";
+import { useDispatch } from "react-redux";
 import useForm from '../../../useForm';
 import { useSnackbar } from 'notistack';
 import { apiCall } from '../../../Redux/Api';
 import { LOADING_START, LOADING_END, SERVER_ERROR } from "../../../Redux/actionTypes";
+import { useIntl } from "react-intl";
 
 import _form from './_form';
 
 
 export default ({ match, history }) => {
     const dispatch = useDispatch();
-    const classes = useStyles();
     const id = match.params.id;
     const [obj, setObj] = useState({ nombre: "", descripcion: "" })
     const [serverErrors, setServerErrors] = useState()
     const { enqueueSnackbar } = useSnackbar();
+    const intl = useIntl();
    
 
     let { handleChange, handleSubmit, values, errors } = useForm(
@@ -50,7 +45,7 @@ export default ({ match, history }) => {
     function validateForm(values) {
         let errors = {};
         if (!values.acronimo) {
-            errors.acronimo = "El Acrónimo es requerido";
+            errors.acronimo = intl.formatMessage({ id: "colectores.error.acronimo" })
         }
         return errors;
     }
@@ -92,7 +87,7 @@ export default ({ match, history }) => {
     }
 
     return (
-        <_form title={"Formulario de Clasificador/Colector/Introductor"} 
+        <_form title={intl.formatMessage({ id: "page.colectores.form.title" })} 
         id = {match.params.id}
         values={values} 
         errors={errors} handleSubmit={handleSubmit} 

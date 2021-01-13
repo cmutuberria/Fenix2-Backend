@@ -1,15 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Typography,
+  
   Card,
-  CardContent,
-  Grid,
-  Button,
-  CardActions,
-  List,
-  ListItem,
-  ListItemText,
+  CardContent,  
+  Button,  
   TextField,
   Dialog,
   DialogTitle,
@@ -26,18 +21,21 @@ import {
 import { apiCall } from "../../../Redux/Api";
 import { loading } from "../../../Redux/selectors";
 import useForm from "../../../useForm";
-import ColectorForm from "../../Configuracion/Colector/_form";
+import { FormattedMessage, useIntl } from "react-intl";
+
+// import ColectorForm from "../../Configuracion/Colector/_form";
 
 export default ({ openDialog, setOpenDialog, loadClasificadores, handleSelectClasificador, valuesEspecie }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const Loading = useSelector((state) => loading(state));
   const { enqueueSnackbar } = useSnackbar();
-  const [showForm, setShowForm] = useState(false);
+  // const [showForm, setShowForm] = useState(false);
 
   const [serverErrors, setServerErrors] = useState();
+  const intl = useIntl();
 
-  let { handleChange, handleSubmit, values, errors } = useForm(
+  let { resetData, handleChange, handleSubmit, values, errors } = useForm(
     submit,
     validateForm,
     // id ? obj : null,
@@ -47,7 +45,7 @@ export default ({ openDialog, setOpenDialog, loadClasificadores, handleSelectCla
   function validateForm(values) {
     let errors = {};
     if (!values.acronimo) {
-      errors.acronimo = "El Acrónimo es requerido";
+      errors.acronimo = intl.formatMessage({ id: "colectores.error.acronimo" })
     }
     return errors;
   }
@@ -56,17 +54,19 @@ export default ({ openDialog, setOpenDialog, loadClasificadores, handleSelectCla
       dispatch({ type: LOADING_START });
       let result = null;
       result = await apiCall(`/colector`, values, null, "POST");
-      console.log(result.data.obj);
       if (result) {
         enqueueSnackbar(result.data.message, { variant: "success" });
         loadClasificadores();
-        handleSelectClasificador("clasificadores", [...valuesEspecie.clasificadores,result.data.obj])
+        handleSelectClasificador("clasificadores", valuesEspecie.clasificadores?[...valuesEspecie.clasificadores,result.data.obj]:[result.data.obj])
         setOpenDialog(false);
       }
       dispatch({ type: LOADING_END });
+      resetData()
+
     } catch (err) {
+      console.log(err);
       dispatch({ type: LOADING_END });
-      if (err.response.data.errors) {
+      if (err.response&&err.response.data.errors) {
         Object.keys(err.response.data.errors).map((elem) => {
           errors = {
             ...errors,
@@ -92,7 +92,8 @@ export default ({ openDialog, setOpenDialog, loadClasificadores, handleSelectCla
       onClose={() => setOpenDialog(false)}
     >
       <DialogTitle id="responsive-dialog-title">
-        Adicionar Clasificador
+      <FormattedMessage id="page.especies.form.clasificador.dialog.title" />
+      
       </DialogTitle>
       <form onSubmit={handleSubmit} noValidate>
         <DialogContent className={classes.dialogImg} dividers>
@@ -100,7 +101,7 @@ export default ({ openDialog, setOpenDialog, loadClasificadores, handleSelectCla
             <CardContent>
               <TextField
                 className={classes.textField}
-                label="Acrónimo*"
+                label={intl.formatMessage({ id: "colectores.attr.acronimo" })+"*"}
                 name="acronimo"
                 id="acronimo"
                 onChange={handleChange}
@@ -110,7 +111,7 @@ export default ({ openDialog, setOpenDialog, loadClasificadores, handleSelectCla
               />
               <TextField
                 className={classes.textField}
-                label="Nombre"
+                label={intl.formatMessage({ id: "colectores.attr.nombre" })}
                 name="nombre"
                 id="nombre"
                 onChange={handleChange}
@@ -123,10 +124,10 @@ export default ({ openDialog, setOpenDialog, loadClasificadores, handleSelectCla
         </DialogContent >
         <DialogActions>
           <Button autoFocus onClick={cancel} color="primary">
-            Cancelar
+          <FormattedMessage id="dialog.btn.cancel" />
           </Button>
           <Button type="submit" color="primary">
-            Salvar
+          <FormattedMessage id="btn.save" />
           </Button>
         </DialogActions>
       </form>

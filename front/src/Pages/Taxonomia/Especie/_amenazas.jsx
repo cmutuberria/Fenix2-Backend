@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Typography,
   Card,
   CardContent,
   Grid,
@@ -10,10 +9,7 @@ import {
   List,
   ListItem,
   ListItemText,
-  CardHeader,
-  Checkbox,
-  Divider,
-  ListItemIcon, TextField
+  TextField
 } from "@material-ui/core";
 import useStyles from "../../../style";
 import { useSnackbar } from "notistack";
@@ -27,6 +23,7 @@ import { loading } from "../../../Redux/selectors";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { FormattedMessage, useIntl } from "react-intl";
 
 
 export default ({ obj, loadObj }) => {
@@ -41,7 +38,7 @@ export default ({ obj, loadObj }) => {
   const [errors, setErrors] = useState({});
   const [amenazas, setAmenazas] = useState([]);
   const [estreses, setEstreses] = useState([]);
-
+  const intl = useIntl();
 
   const loadAmenazas = async () => {
     try {
@@ -135,7 +132,7 @@ export default ({ obj, loadObj }) => {
               <ListItem >
                 <ListItemText key={elem._id} 
                 primary={elem.nombre}
-                secondary={elem.tipo?"Amenaza":"Estrés"}/>
+                secondary={elem.tipo?intl.formatMessage({ id: "especies.label.amenaza" }):intl.formatMessage({ id: "especies.label.estres" })}/>
               </ListItem>
             ))}
           </List>
@@ -146,7 +143,7 @@ export default ({ obj, loadObj }) => {
             {obj.a_estreses.map((elem) => (
               <ListItem >
                 <ListItemText key={elem._id} primary={elem.nombre} 
-                secondary={elem.tipo?"Amenaza":"Estrés"}></ListItemText>
+                secondary={elem.tipo?intl.formatMessage({ id: "especies.label.amenaza" }):intl.formatMessage({ id: "especies.label.estres" })}></ListItemText>
               </ListItem>
             ))}
           </List>
@@ -155,7 +152,7 @@ export default ({ obj, loadObj }) => {
           <List>
             <ListItem key="a_observaciones">
               <ListItemText
-                primary="Observaciones:"
+                primary={intl.formatMessage({ id: "especies.attr.f_observaciones" })+":"}
                 secondary={
                   <ReactQuill
                     id="a_observacionesShow"
@@ -200,7 +197,7 @@ export default ({ obj, loadObj }) => {
                 disabled={Loading}
                 onClick={editData}
               >
-                Editar
+               <FormattedMessage id="btn.edit" />
               </Button>
             </CardActions>
           </Grid>
@@ -226,7 +223,7 @@ export default ({ obj, loadObj }) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Amenazas"
+                          label={intl.formatMessage({ id: "especies.label.amenazas" })}
                           className={classes.textField}
                           error={errors.a_amenazas ? true : false}
                           helperText={errors.a_amenazas}
@@ -249,7 +246,7 @@ export default ({ obj, loadObj }) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Estreses"
+                          label={intl.formatMessage({ id: "especies.label.estreses" })}
                           className={classes.textField}
                           error={errors.a_estreses ? true : false}
                           helperText={errors.a_estreses}
@@ -279,9 +276,9 @@ export default ({ obj, loadObj }) => {
                   color="primary"
                   disabled={Loading}
                 >
-                  Salvar
+                  <FormattedMessage id="btn.save" />
                 </Button>
-                <Button variant="contained" color="primary" disabled={Loading} onClick={cancel}>Cancelar</Button>
+                <Button variant="contained" color="primary" disabled={Loading} onClick={cancel}><FormattedMessage id="btn.cancel" /></Button>
 
               </CardActions>
               </form>

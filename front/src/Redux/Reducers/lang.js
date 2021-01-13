@@ -13,19 +13,16 @@ export default function (state = initialState, action) {
                 ...state,
                lang:action.payload
             };
-            break;   
         case LOAD_LANGUAGE_COMPLETE:
             console.log("payload ",action.payload);
             return {
                 ...state,
                lang:action.payload
             };
-            break;        
         default:
             return {
                 ...state
             }
-            break;
     }
 
 }

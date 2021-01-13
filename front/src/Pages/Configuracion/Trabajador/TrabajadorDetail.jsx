@@ -9,6 +9,7 @@ import useStyles from '../../../style'
 import { LOADING_START, LOADING_END, SERVER_ERROR } from "../../../Redux/actionTypes";
 import { apiCall } from "../../../Redux/Api";
 import { loading } from "../../../Redux/selectors";
+import { FormattedMessage, useIntl  } from "react-intl";
 
 
 
@@ -18,6 +19,8 @@ export default ({ history, match }) => {
     const id = match.params.id;
     const [obj, setObj] = useState({});
     const Loading = useSelector(state => loading(state));
+  const intl = useIntl();
+
 
     const loadObj = async (id) => {
         try {
@@ -38,7 +41,7 @@ export default ({ history, match }) => {
     return (
         <React.Fragment>
             <div className={classes.header}>
-                <Typography variant="h5" className={classes.title}>Detalle del Trabajador</Typography>
+                <Typography variant="h5" className={classes.title}><FormattedMessage id="page.trabajadores.detail.title" /></Typography>
             </div>
             <Card className={classes.card}>
                 <CardContent className={classes.detail}>
@@ -49,7 +52,7 @@ export default ({ history, match }) => {
                             </ListItemText>
                         </ListItem>
                         {obj.usuario_general && <ListItem >
-                            <ListItemText primary="Usuario General">
+                            <ListItemText primary={intl.formatMessage({ id: 'trabajadores.label.general' })}>
                             </ListItemText>
                         </ListItem>}
                         {obj.jardin && <ListItem >
@@ -60,7 +63,7 @@ export default ({ history, match }) => {
                     </List>
                     <List>
                         <ListItem >
-                            <ListItemText primary="Nro Identificación:" secondary={obj.nro_identificacion} />
+                            <ListItemText primary={intl.formatMessage({ id: 'trabajadores.label.nro_identificacion' })+":"} secondary={obj.nro_identificacion} />
                         </ListItem>
                         <ListItem dense>
                             <ListItemText primary="Roles:" secondary={
@@ -70,18 +73,18 @@ export default ({ history, match }) => {
 
                         </ListItem>
                         <ListItem >
-                            <ListItemText primary="Usuario:" secondary={obj.usuario} />
+                            <ListItemText primary={intl.formatMessage({ id: 'trabajadores.attr.usuario' })+":"} secondary={obj.usuario} />
                         </ListItem>
                     </List>
                     <List>
                         <ListItem >
-                            <ListItemText primary="Dirección Particular:" secondary={obj.direccion} />
+                            <ListItemText primary={intl.formatMessage({ id: 'trabajadores.attr.direccion' })+":"} secondary={obj.direccion} />
                         </ListItem>
                         <ListItem >
-                            <ListItemText primary="Email:" secondary={obj.email} />
+                            <ListItemText primary={intl.formatMessage({ id: 'trabajadores.attr.email' })+":"} secondary={obj.email} />
                         </ListItem>
                         <ListItem >
-                            <ListItemText primary="Teléfono:" secondary={obj.telefono} />
+                            <ListItemText primary={intl.formatMessage({ id: 'trabajadores.attr.telefono' })+":"} secondary={obj.telefono} />
                         </ListItem>
                     </List>
                 </CardContent>

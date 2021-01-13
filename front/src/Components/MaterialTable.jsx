@@ -2,9 +2,12 @@ import React from "react";
 import MaterialTable from 'material-table';
 import { IconButton, Tooltip } from "@material-ui/core";
 import { Edit, Delete, Visibility, PermIdentity, LockOpen, Lock} from '@material-ui/icons';
+import { useIntl  } from "react-intl";
 
 
 export default ({ data, actions, columns }) => {
+   const intl = useIntl();
+
     const renderIcon = (icon) => {
         switch (icon) {
             case "edit":
@@ -65,11 +68,11 @@ export default ({ data, actions, columns }) => {
                 },
                 pagination: {
                     labelDisplayedRows: '{from}-{to} de {count}',
-                    labelRowsSelect:"Filas por página",
-                    firstTooltip:"Primera página",
-                    lastTooltip:"Última página",
-                    previousTooltip:"Página anterior",
-                    nextTooltip:"Página siguiente",
+                    labelRowsSelect:intl.formatMessage({ id: 'table.pagination.labelRowsSelect' }),
+                    firstTooltip:intl.formatMessage({ id: 'table.pagination.firstTooltip' }),
+                    lastTooltip:intl.formatMessage({ id: 'table.pagination.lastTooltip' }),
+                    previousTooltip:intl.formatMessage({ id: 'table.pagination.previousTooltip' }),
+                    nextTooltip:intl.formatMessage({ id: 'table.pagination.nextTooltip' }),
                 },
                 body: {
                     emptyDataSourceMessage: 'Sin datos para mostrar',

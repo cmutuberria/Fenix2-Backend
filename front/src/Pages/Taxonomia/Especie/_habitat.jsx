@@ -23,6 +23,7 @@ import { apiCall } from "../../../Redux/Api";
 import { error, loading } from "../../../Redux/selectors";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { FormattedMessage } from "react-intl";
 
 export default ({ obj, loadObj }) => {
   const classes = useStyles();
@@ -122,7 +123,7 @@ export default ({ obj, loadObj }) => {
               disabled={Loading}
               onClick={editData}
             >
-              Editar
+              <FormattedMessage id="btn.edit" />
             </Button>
           </CardActions>
         </Grid>}
@@ -149,9 +150,9 @@ export default ({ obj, loadObj }) => {
                   color="primary"
                   disabled={Loading}
                 >
-                  Salvar
+                  <FormattedMessage id="btn.save" />
                 </Button>
-                <Button variant="contained" color="primary" disabled={Loading} onClick={cancel}>Cancelar</Button>
+                <Button variant="contained" color="primary" disabled={Loading} onClick={cancel}><FormattedMessage id="btn.cancel" /></Button>
 
               </CardActions>
             </form>

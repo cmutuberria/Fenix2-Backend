@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import {
-    Typography, Card, CardContent, Grid,
-    Button, IconButton, CardActions, Paper, List, ListItem,
+    Typography,  Grid,
+    Button, IconButton,  Paper, List, ListItem,
     ListItemText,
     ListItemSecondaryAction,
     TextField
@@ -11,9 +11,9 @@ import useStyles from '../../../style'
 import { useSnackbar } from 'notistack';
 import { LOADING_START, LOADING_END, SERVER_ERROR } from "../../../Redux/actionTypes";
 import { apiCall } from "../../../Redux/Api";
-import { Edit, Delete, AddBox, KeyboardArrowUp, Visibility, ExpandMore, ExpandLess } from '@material-ui/icons';
+import { Edit, Delete, ExpandMore, ExpandLess } from '@material-ui/icons';
 import { loading } from "../../../Redux/selectors";
-
+import { FormattedMessage, useIntl } from "react-intl";
 
 
 export default ({ obj }) => {
@@ -25,7 +25,7 @@ export default ({ obj }) => {
     const { enqueueSnackbar } = useSnackbar();
     const [serverErrors, setServerErrors] = useState()
     const [showForm, setShowForm] = useState(false);
-
+    const intl = useIntl();
 
     const [values, setValues] = useState({});
     const [errors, setErrors] = useState({});
@@ -40,7 +40,7 @@ export default ({ obj }) => {
     function validateForm() {
         let errors1 = {};
         if (!values.nombre) {
-            errors1.nombre = "El nombre es requerido";
+            errors1.nombre = intl.formatMessage({ id: "especies.error.nombre" })
         }
         setErrors(errors1);
         return errors1;
@@ -114,7 +114,7 @@ export default ({ obj }) => {
             {elements.map((item, i) => <ListItem key={i}>
                 <ListItemText primary={item} />
                 <ListItemSecondaryAction >
-                    <IconButton aria-label="Editar" edge="end"
+                    <IconButton aria-label={intl.formatMessage({ id: "btn.edit" })} edge="end"
                         onClick={(e) => {
                             setSelectedChild(item)
                             setValues({ ...values, nombre: item })
@@ -122,7 +122,7 @@ export default ({ obj }) => {
                         }}>
                         <Edit fontSize="small" />
                     </IconButton>
-                    <IconButton aria-label="Eliminar" edge="end"
+                    <IconButton aria-label={intl.formatMessage({ id: "btn.delete" })} edge="end"
                         onClick={(e) => {
                             handlerDelete(item)
                         }}>
@@ -135,20 +135,20 @@ export default ({ obj }) => {
     return (
         <React.Fragment>
             <div className={classes.detailHeader}>
-                <Typography variant="h6">N. Comunes</Typography>
+                <Typography variant="h6"><FormattedMessage id="page.especies.detalle.nombres_comunes" /></Typography>
                 {!showForm && <Button endIcon={<ExpandMore />}
                     size="small"
                     onClick={()=>setShowForm(!showForm)}>
-                    Mostrar Formulario</Button>}
+                    <FormattedMessage id="btn.show" /></Button>}
                 {showForm && <Button endIcon={<ExpandLess />}
                     size="small"
                     onClick={()=>setShowForm(!showForm)}>
-                    Ocultar Formulario</Button>}
+                    <FormattedMessage id="btn.hide" /></Button>}
             </div>
             {showForm&&<Grid>
                 <form onSubmit={handleSubmit} noValidate className={classes.formInline}>
                     <TextField
-                        label="Nombre*"
+                        label={intl.formatMessage({ id: "especies.attr.nombre" })+"*"}
                         name="nombre"
                         id="nombre"
                         className={classes.autocompleteInline} 
@@ -158,7 +158,7 @@ export default ({ obj }) => {
                         helperText={errors.nombre}
                     />
                     <Button variant="contained" type="submit"
-                        color="primary" size="small" disabled={Loading}>Salvar</Button>
+                        color="primary" size="small" disabled={Loading}><FormattedMessage id="btn.save" /></Button>
 
                 </form>
             </Grid>}
